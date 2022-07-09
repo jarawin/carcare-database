@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     res.send('Hello Peem');
 })
 
-const port = process.env.PORT || 1234
+const port = process.env.PORT || 5000
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 })

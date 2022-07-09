@@ -1,8 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const mysql = require('mysql2');
+import express, { json } from 'express';
+import cors from 'cors';
+import { createConnection } from 'mysql2';
 
-const connection = mysql.createConnection({
+const connection = createConnection({
     host: "localhost",
     user: "root",
     password: '',
@@ -11,8 +11,7 @@ const connection = mysql.createConnection({
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(bodyParser.json());
+app.use(json());
 
 app.get('/', (req, res) => {
     res.send('Hello Peem');

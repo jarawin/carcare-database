@@ -3,6 +3,7 @@ import cors from 'cors';
 import { createConnection } from 'mysql2';
 import { v4 as uuidv4 } from 'uuid';
 import checkInUserList from './users/checkInList.js';
+import checkPhone from './users/checkPhone.js';
 
 const con = createConnection({
     host: "localhost",
@@ -20,10 +21,19 @@ app.get('/', (req, res) => {
 })
 
 app.post('/register', async function (req, res, next) {//TODO register
-    let External = req.body.userIdExternal;
-    let fromWhere = req.body.from;
-
+    let unix = Date.now();
+    let External = req.body.social_id;
+    let fromWhere = req.body.social_from;
     let fromForSql;
+    const phone = req.body.phone;
+
+    await checkPhone(phone).then(value => {
+        if (value == false){
+            res.status(404).send();
+            console.log("phone error");
+            return 0;
+        }
+    });
 
     switch(fromWhere) {//! validate from where
         case "Facebook":
@@ -49,20 +59,17 @@ app.post('/register', async function (req, res, next) {//TODO register
                     //? if uuidFromExternal dupicate but live in another collum, it allow 
             const uuid = uuidv4(); //! not check duplicate because it guarantee unique
             const nickname = req.body.nickname;
-            const pic = req.body.picture;
+            const picture_url = req.body.picture_url;
         ///////////////////////////////////////////////////////////////////
             con.connect(function(err) {
                 if (err) throw err;
                 console.log("Connected!");
 
-                con.query(`INSERT INTO users(userid, nickname, picture) VALUES("${uuid}","${nickname}", "${pic}")`, function (err, result) {
-                    if (err) throw err;
-                    console.log("insert table users success");
-
-                    con.query(`INSERT INTO linkuserid(userid, ${fromForSql}) VALUES("${uuid}", "${External}")`, function (err, result) {
+                con.query(`INSERT INTO users(timestamp, u_id, nickname, phone, picture_url, social_id, social_from) 
+                           VALUES("${unix}", "${uuid}", "${nickname}", "${phone}", "${picture_url}", "${External}", "${fromWhere}")`, 
+                    function (err, result) {
                         if (err) throw err;
-                        console.log("insert table linkuserid success");
-                    });
+                        console.log("insert table users success");
                 });
             });
         }
@@ -73,3 +80,6 @@ const port = process.env.PORT || 3030
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 })
+
+//? `INSERT INTO users(userid, nickname, picture) VALUES("${uuid}","${nickname}", "${pic}")`
+//? `SELECT * FROM users WHERE u_id = '${uuid}' `

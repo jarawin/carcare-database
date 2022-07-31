@@ -3,7 +3,7 @@ async function checkInUserList(idExternal, con, fromForSql, callBack){
         if (err)
             throw err;
 
-        con.query(`SELECT ${fromForSql} FROM linkuserid WHERE ${fromForSql} = "${idExternal}"`,(err, result) => {
+        con.query(`SELECT social_id  FROM users WHERE social_id  = "${idExternal}"`,(err, result) => {
             if (err) throw err;
 
             if (result[0] == undefined) { //! allow to register because userid from... not duplicate

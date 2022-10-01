@@ -223,12 +223,12 @@ CREATE TABLE promotion(
     image varchar(255) NOT NULL,
     starttime int(25) NOT NULL,
     endtime int(25) NOT NULL,
-    limitflag boolean NOT NULL,
-    limit_amount int(11) NOT NULL,
-    limit_type varchar(255) NOT NULL,
-    dayflag boolean NOT NULL,
-    rankflag boolean NOT NULL,
-    rank varchar(255) NOT NULL
+    limitflag BOOLEAN,
+    limit_amount int(11),
+    limit_type varchar(255),
+    dayflag BOOLEAN,
+    rankflag boolean,
+    rank varchar(255)
 );
 
 CREATE TABLE price_per_type_p(

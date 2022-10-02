@@ -3,6 +3,8 @@ import cors from "cors";
 import { createConnection } from "mysql2";
 import { v4 as uuidv4 } from "uuid";
 import {insertPromotion} from "./promotion/insert_p.js"
+import {getPromotion} from "./promotion/get_p.js"
+
 
 const app = express();
 app.use(cors());
@@ -20,8 +22,12 @@ app.get("/", (req, res) => {
   res.send("Hello Peem");
 });
 
+app.get("/promotion", (req, res) => {
+  getPromotion(con, req, res);
+})
+
 app.put("/promotion", (req, res) => {
-    insertPromotion(con, req, res);
+  insertPromotion(con, req, res);
 });
 
 const port = process.env.PORT || 3307;

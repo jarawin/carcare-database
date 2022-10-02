@@ -3,7 +3,7 @@ import cors from "cors";
 import { createConnection } from "mysql2";
 import { v4 as uuidv4 } from "uuid";
 import {insertPromotion} from "./promotion/insert_p.js"
-import {getPromotion} from "./promotion/get_p.js"
+import {getPromotion,getAllPromotion} from "./promotion/get_p.js"
 
 
 const app = express();
@@ -24,6 +24,10 @@ app.get("/", (req, res) => {
 
 app.get("/promotion", (req, res) => {
   getPromotion(con, req, res);
+})
+
+app.get("/allpromotion", (req, res) => {
+  getAllPromotion(con, req, res);
 })
 
 app.put("/promotion", (req, res) => {

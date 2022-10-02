@@ -7,9 +7,9 @@ function getPromotion(con, req, res) {
   } else {
     const sql1 = `SELECT * FROM promotion WHERE code = "${req.body.code}"`;
     const sql2 = `SELECT * 
-        FROM promotion AS p
-        INNER JOIN promotion_by_day AS pd ON p.code = pd.code
-        WHERE pd.code= "${req.body.code}";`;
+                  FROM promotion AS p
+                  INNER JOIN promotion_by_day AS pd ON p.code = pd.code
+                  WHERE pd.code= "${req.body.code}";`;
     con.connect((err) => {
       if (err) throw err;
       console.log("\nConnected!");
@@ -37,4 +37,21 @@ function getPromotion(con, req, res) {
   }
 }
 
-export { getPromotion };
+function getAllPromotion(con, req, res) {
+  const sql1 = `SELECT * FROM promotion`;
+  const sql2 = `SELECT * 
+                FROM promotion AS p
+                LEFT JOIN promotion_by_day AS pd ON p.code = pd.code;`;
+  con.connect((err) => {
+    if (err) throw err;
+    console.log("\nConnected!");
+
+    con.query(sql1, (err, result) => {
+      if (err) throw err;
+      res.status(200).send(result);
+      console.log("get all promotion success");
+    });
+  });
+}
+
+export { getPromotion, getAllPromotion };

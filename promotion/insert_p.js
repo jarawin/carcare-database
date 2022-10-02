@@ -49,13 +49,14 @@ function insertPromotion(con, req, res) {
           con.query(sql1, (err, result) => {
             if (err) throw err;
             console.log("insert promotion success");
-
+            res.status(200).send("Message : OK")
             if (dayflag == true) {
               var sql2 = `INSERT INTO promotion_by_day(code, day) 
                                         VALUES("${code}", "${day}")`;
               con.query(sql2, (err, result) => {
                 if (err) throw err;
                 console.log("insert promotion_by_day success");
+                res.status(200).send("{Message : OK}")
               });
             } else {
               console.log("no promotion_by_day");
@@ -63,7 +64,7 @@ function insertPromotion(con, req, res) {
           });
         } else {
           console.log(`code ${result[0].code} is duplicate`);
-          res.status(404).send();
+          res.status(404).send("{code : duplicate}");
           return 0;
         }
       }

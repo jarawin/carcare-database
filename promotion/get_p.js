@@ -18,7 +18,7 @@ function getPromotion(con, req, res) {
         if (err) throw err;
         if (result[0] == undefined) {
           console.log("Not found code");
-          res.status(404).send("Not found code");
+          res.status(404).send("{code : Not found}");
         } else {
           if (result[0].dayflag == 1) {
             console.log("Join!");

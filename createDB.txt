@@ -3,15 +3,13 @@ CREATE DATABASE carcare;
 USE carcare;
 
 CREATE TABLE employee(
-	user_id varchar(255) NOT NULL,
+	employee_id varchar(255) NOT NULL,
     apply_status varchar(255) NOT NULL,
-    registered_time int(25) NOT NULL,
-    display_name varchar(255) NOT NULL,
     phone char(10) NOT NULL,
     email varchar(255) NOT NULL,
     picture_url varchar(255) NOT NULL,
-    lasttime_active int(25) NOT NULL,
-    permission varchar(255) NOT NULL,
+    firstwork_time int(25) NOT NULL,
+    lastlogin_time int(25) NOT NULL,
     work_background varchar(255) NOT NULL,
     graduation_certificate varchar(255) NOT NULL,
     prefixname varchar(255) NOT NULL,
@@ -19,14 +17,19 @@ CREATE TABLE employee(
     lname varchar(255) NOT NULL,
     nickname varchar(255) NOT NULL,
     wage_type varchar(255) NOT NULL,
-    PRIMARY KEY (user_id)
+    employee_type varchar(255) NOT NULL,
+    address varchar(255) NOT NULL,
+    id_card varchar(255) NOT NULL,
+    resume varchar(255) NOT NULL,
+    house_registration varchar(255) NOT NULL,
+    PRIMARY KEY (employee_id)
 
 );
 
 CREATE TABLE employee_wage(
 	wage_type varchar(255) NOT NULL ,
     wage_amount int(11) NOT NULL,
-    UNIQUE (wage_type)
+    PRIMARY KEY (wage_type)
 );
 
 ALTER TABLE employee
@@ -37,40 +40,40 @@ ADD CONSTRAINT eew
     	ON UPDATE CASCADE;
 
 CREATE TABLE workleave(
-    user_id varchar(255) NOT NULL PRIMARY KEY,
+    employee_id varchar(255) NOT NULL PRIMARY KEY,
     timestamp int(25) UNSIGNED NOT NULL,
     description varchar(255) NOT NULL,
-    type varchar(255) NOT NULL,
+    workleave_type varchar(255) NOT NULL,
     starttime int(25) UNSIGNED NOT NULL,
     endtime int(25) UNSIGNED NOT NULL,
-    CONSTRAINT wle FOREIGN KEY (user_id) 
-    REFERENCES employee(user_id)
+    CONSTRAINT wle FOREIGN KEY (employee_id) 
+    REFERENCES employee(employee_id)
     ON UPDATE CASCADE
     ON DELETE NO ACTION
 );
 
 CREATE TABLE worktime(
-	user_id varchar(255) NOT NULL,
+	employee_id varchar(255) NOT NULL,
     starttime int(25) UNSIGNED NOT NULL,
     endtime int(25) UNSIGNED NOT NULL,
-    PRIMARY KEY (user_id),
-    CONSTRAINT wte FOREIGN KEY (user_id) 
-    REFERENCES employee(user_id)
+    location_start varchar(255) NOT NULL,
+    location_end varchar(255) NOT NULL,
+    PRIMARY KEY (employee_id),
+    CONSTRAINT wte FOREIGN KEY (employee_id) 
+    REFERENCES employee(employee_id)
     ON UPDATE CASCADE
     ON DELETE NO ACTION
 );
 
 CREATE TABLE history_salary(
-	user_id varchar(255) NOT NULL,
+	employee_id varchar(255) NOT NULL,
     timestamp int(25) UNSIGNED NOT NULL,
-    amount int(11) UNSIGNED NOT NULL,
-    amount_type varchar(255) NOT NULL,
     salary int(11) UNSIGNED NOT NULL,
     overtime int(11) UNSIGNED NOT NULL,
     commission int(11) UNSIGNED NOT NULL,
-    PRIMARY KEY (user_id),
-    CONSTRAINT hse FOREIGN KEY (user_id) 
-    REFERENCES employee(user_id)
+    PRIMARY KEY (employee_id),
+    CONSTRAINT hse FOREIGN KEY (employee_id) 
+    REFERENCES employee(employee_id)
     ON UPDATE CASCADE
     ON DELETE NO ACTION
 );
@@ -83,29 +86,32 @@ CREATE TABLE commission(
     quota_amount int(11) UNSIGNED NOT NULL,
     amount_type varchar(255) NOT NULL,
     amount int(11) UNSIGNED NOT NULL,
-    position varchar(255) NOT NULL,
+    order_type varchar(255) NOT NULL,
     PRIMARY KEY (commission_id)
 );
 
 CREATE TABLE orderlist(
 	order_id varchar(255) NOT NULL,
     type_car varchar(255) NOT NULL,
-    license_car varchar(15) NOT NULL,
+    color_car varchar(255) NOT NULL,
+    license_car varchar(255) NOT NULL,
     nickname varchar(255) NOT NULL,
     order_status varchar(255) NOT NULL,
     tel char(10) NOT NULL,
     is_booking varchar(255) NOT NULL,
-    arrival_time int(25) NOT NULL,
+    booking_time int(11) UNSIGNED NOT NULL,
+    arrival_time int(11) UNSIGNED NOT NULL,
     code varchar(255),
+    order_type varchar(255) NOT NULL,
     PRIMARY KEY (order_id)
 );
 
 CREATE TABLE make_commission(
-    user_id varchar(255) NOT NULL PRIMARY KEY,
+    employee_id varchar(255) NOT NULL PRIMARY KEY,
     order_id varchar(255) NOT NULL UNIQUE,
     CONSTRAINT mce 
-    FOREIGN KEY (user_id) 
-    REFERENCES employee(user_id)
+    FOREIGN KEY (employee_id) 
+    REFERENCES employee(employee_id)
     ON UPDATE CASCADE
     ON DELETE NO ACTION
 );
@@ -118,23 +124,23 @@ ADD CONSTRAINT mcole
         ON DELETE NO ACTION;
 
 CREATE TABLE customer(
-	user_id varchar(255) NOT NULL PRIMARY KEY,
-    registered_time int(25) NOT NULL,
-    display_name varchar(255) NOT NULL,
+	customer_id varchar(255) NOT NULL PRIMARY KEY,
+    fname varchar(255) NOT NULL,
+    lname varchar(255) NOT NULL,
     email varchar(255) NOT NULL,
     picture_url varchar(255) NOT NULL,
-    lasttime_active int(25) NOT NULL,
-    permssion varchar(255) NOT NULL,
+    firstlogin_time int(25) NOT NULL,
+    lastlogin_time int(25) NOT NULL,
     rank varchar(255) NOT NULL,
     customer_type varchar(255) NOT NULL
 );
 
 CREATE TABLE make_order(
-    user_id varchar(255) NOT NULL PRIMARY KEY,
+    customer_id varchar(255) NOT NULL PRIMARY KEY,
     order_id varchar(255) NOT NULL UNIQUE,
     CONSTRAINT moc
-    FOREIGN KEY (user_id) 
-    REFERENCES customer(user_id)
+    FOREIGN KEY (customer_id) 
+    REFERENCES customer(customer_id)
     ON UPDATE CASCADE
     ON DELETE NO ACTION
 );
@@ -151,17 +157,16 @@ CREATE TABLE package_info(
     package_name varchar(255) NOT NULL,
     package_desciption varchar(255) NOT NULL,
     reduce_type varchar(255) NOT NULL,
-    reduce_price int(11) NOT NULL
+    reduce int(11) UNSIGNED NOT NULL
 );
 
 CREATE TABLE buy(
-    user_id varchar(255) NOT NULL PRIMARY KEY,
+    customer_id varchar(255) NOT NULL PRIMARY KEY,
     package_id varchar(255) NOT NULL UNIQUE,
     timestamp int(25) UNSIGNED NOT NULL,
-    quota int(11) UNSIGNED NOT NULL,
     CONSTRAINT bci
-    FOREIGN KEY (user_id)
-    REFERENCES customer(user_id)
+    FOREIGN KEY (customer_id)
+    REFERENCES customer(customer_id)
     ON UPDATE CASCADE
     ON DELETE NO ACTION
 );
@@ -174,23 +179,6 @@ ADD CONSTRAINT bpi
         ON DELETE NO ACTION;
 
 
-CREATE TABLE use_quota(
-    user_id varchar(255) NOT NULL PRIMARY KEY,
-    package_id varchar(255) NOT NULL UNIQUE,
-    timestamp int(25) UNSIGNED NOT NULL,
-    CONSTRAINT uqci
-    FOREIGN KEY (user_id)
-    REFERENCES customer(user_id)
-    ON UPDATE CASCADE
-    ON DELETE NO ACTION
-);
-
-ALTER TABLE use_quota
-ADD CONSTRAINT uqp
-        FOREIGN KEY (package_id)
-        REFERENCES package_info(package_id)
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION;
 
 CREATE TABLE service(
 	service_id varchar(255) NOT NULL PRIMARY KEY,
@@ -228,19 +216,33 @@ CREATE TABLE promotion(
     limit_type varchar(255),
     dayflag BOOLEAN,
     rankflag boolean,
-    rank varchar(255)
+    rank varchar(255),
+    is_member boolean NOT NULL
 );
 
 CREATE TABLE price_per_type_p(
     code varchar(255) NOT NULL PRIMARY KEY,
     type_of_car varchar(255) NOT NULL,
-    price int(11) UNSIGNED NOT NULL,
+    reduce_type varchar(255) NOT NULL,
+    reduce int(11) UNSIGNED NOT NULL,
     CONSTRAINT pptp 
     FOREIGN KEY (code)
     REFERENCES promotion(code)
     ON UPDATE CASCADE
     ON DELETE CASCADE  
 );
+
+CREATE TABLE promotion_by_day(
+	code varchar(255) NOT NULL PRIMARY KEY,
+    day varchar(255) NOT NULL
+);
+
+ALTER TABLE promotion_by_day
+ADD CONSTRAINT pbdp
+    	FOREIGN KEY (code)
+    	REFERENCES promotion(code)
+    	ON DELETE CASCADE
+    	ON UPDATE CASCADE;
 
 CREATE TABLE can_reduce(
 	code varchar(255) NOT NULL PRIMARY KEY,
@@ -259,7 +261,7 @@ ADD CONSTRAINT crs
         ON UPDATE CASCADE
         ON DELETE CASCADE;
 
-CREATE TABLE cart_list(
+CREATE TABLE included(
 	order_id varchar(255) NOT NULL PRIMARY KEY,
     service_id varchar(255) NOT NULL UNIQUE,
     CONSTRAINT clo
@@ -269,24 +271,12 @@ CREATE TABLE cart_list(
     ON DELETE NO ACTION
 );
 
-ALTER TABLE cart_list
+ALTER TABLE included
 ADD CONSTRAINT cls
         FOREIGN KEY (service_id)
         REFERENCES service(service_id)
         ON UPDATE CASCADE
         ON DELETE NO ACTION;
-
-CREATE TABLE promotion_by_day(
-	code varchar(255) NOT NULL PRIMARY KEY,
-    day varchar(255) NOT NULL
-);
-
-ALTER TABLE promotion_by_day
-ADD CONSTRAINT pbdp
-    	FOREIGN KEY (code)
-    	REFERENCES promotion(code)
-    	ON DELETE CASCADE
-    	ON UPDATE CASCADE;
 
 CREATE TABLE generate_by(
     package_id varchar(255) NOT NULL PRIMARY KEY,

@@ -4,6 +4,8 @@ import { createConnection } from "mysql2";
 import { v4 as uuidv4 } from "uuid";
 import {insertPromotion} from "./promotion/insert_p.js"
 import {getPromotion,getAllPromotion} from "./promotion/get_p.js"
+import {applyWork} from "./employee/applyWork.js"
+import {insertWage} from "./employee/employee_wage/insert.js"
 
 
 const app = express();
@@ -33,6 +35,14 @@ app.get("/allpromotion", (req, res) => {
 app.put("/promotion", (req, res) => {
   insertPromotion(con, req, res);
 });
+
+app.post("/employee/applywork", (req, res) => {
+  applyWork(con, req, res);
+});
+
+app.post("/employee_wage/addwage", (req, res) => {
+  insertWage(con, req, res)
+})
 
 const port = process.env.PORT || 3307;
 app.listen(port, () => {

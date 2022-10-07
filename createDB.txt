@@ -4,7 +4,7 @@ USE carcare;
 
 CREATE TABLE employee(
 	employee_id varchar(255) NOT NULL,
-    apply_status varchar(255) NOT NULL,
+    apply_status varchar(255) NOT NULL DEFAULT "pending",
     phone char(10) NOT NULL,
     email varchar(255) NOT NULL,
     picture_url varchar(255) NOT NULL,

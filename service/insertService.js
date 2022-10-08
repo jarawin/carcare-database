@@ -10,11 +10,11 @@ const checkCommission = (con, sql0, res) => {
     con.query(sql0, (err, result) => {
         if (err) throw err;
         if (result[0] == undefined){
-            res.status(501).send("Please add commission before add service")
-            console.log("Please add commission before add service");
-            return 0;
+            return false;
+        }else{
+          return true;
         }
-        return 1;
+        
     })
 }
 
@@ -52,19 +52,24 @@ function insertService(con, req, res) {
       if (err) throw err;
       console.log("\nConnected!");
 
-      if(!checkCommission(con, sql0, res)){
+      if(checkCommission(con, sql0, res)){
+        res.status(501).send("Please add commission before add service")
+        console.log("Please add commission before add service");
         return 0;
+      }else{
+        console.log("insert");
+        con.query(sql1, (err, result) => {
+          if (err) throw err;
+          if (result[0] == undefined){//? Not duplicate
+            insertSer(con, sql2, res)
+          }else{//? duplicate
+            res.status(501).send("Service already exists");
+            console.log("Service already exists");
+          }
+        });
       }
       
-      con.query(sql1, (err, result) => {
-        if (err) throw err;
-        if (result[0] == undefined){//? Not duplicate
-          insertSer(con, sql2, res)
-        }else{//? duplicate
-          res.status(501).send("Service already exists");
-          console.log("Service already exists");
-        }
-      });
+      
     });
   }
   

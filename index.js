@@ -8,7 +8,7 @@ import {applyWork} from "./employee/applyWork.js"
 import {insertWage} from "./employee/employee_wage/insertWage.js"
 import {register} from "./customer/insertCustomer.js"
 import {insertService} from "./service/insertService.js";
-
+import {insertCommission} from "./commission/insertComission.js";
 
 const app = express();
 app.use(cors());

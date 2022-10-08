@@ -20,8 +20,8 @@ function insertCommission(con, req, res) {
     const order_type = req.body.order_type;
     
     const sql1 = `SELECT * FROM commission WHERE commission_id = "${commission_id}"`;
-    const sql2 = `INSERT INTO service(commission_id, topic, description, quota_type, quota_amount, amount_type, order_type)
-                  VALUES("${commission_id}","${topic}","${description}","${quota_type }","${quota_amount}","${amount_type}","${amount}","${order_type}");`;
+    const sql2 = `INSERT INTO commission(commission_id, topic, description, quota_type, quota_amount, amount_type, amount, order_type)
+                  VALUES("${commission_id}","${topic}","${description}","${quota_type}","${quota_amount}","${amount_type}","${amount}","${order_type}");`;
     
     con.connect((err) => {
       if (err) throw err;

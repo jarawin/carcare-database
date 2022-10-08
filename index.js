@@ -5,7 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import {insertPromotion} from "./promotion/insert_p.js"
 import {getPromotion,getAllPromotion} from "./promotion/get_p.js"
 import {applyWork} from "./employee/applyWork.js"
-import {insertWage} from "./employee/employee_wage/insert.js"
+import {insertWage} from "./employee/employee_wage/insertWage.js"
+import {register} from "./customer/insertCustomer.js"
+import {insertService} from "./service/insertService.js";
 
 
 const app = express();
@@ -42,6 +44,18 @@ app.post("/employee/applywork", (req, res) => {
 
 app.post("/employee_wage/addwage", (req, res) => {
   insertWage(con, req, res)
+})
+
+app.post("/customer/register", (req, res) => {
+  register(con, req, res)
+})
+
+app.post("/service/insert", (req, res) => {
+  insertService(con, req, res)
+})
+
+app.post("/commission/insert", (req, res) => {
+  insertCommission(con, req, res)
 })
 
 const port = process.env.PORT || 3307;

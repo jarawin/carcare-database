@@ -13,6 +13,7 @@ function insertWage(con, req, res) {
         if (err) throw err;
         res.status(200).send("add wage success");
         console.log("add wage success");
+        con.end();
       });
     });
   }

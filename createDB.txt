@@ -8,8 +8,8 @@ CREATE TABLE employee(
     phone char(10) NOT NULL,
     email varchar(255) NOT NULL,
     picture_url varchar(255) NOT NULL,
-    firstwork_time int(25) NOT NULL,
-    lastlogin_time int(25) NOT NULL,
+    firstwork_time BIGINT(11) UNSIGNED NULL,
+    lastlogin_time BIGINT(11) UNSIGNED NULL,
     work_background varchar(255) NOT NULL,
     graduation_certificate varchar(255) NOT NULL,
     prefixname varchar(255) NOT NULL,
@@ -41,11 +41,11 @@ ADD CONSTRAINT eew
 
 CREATE TABLE workleave(
     employee_id varchar(255) NOT NULL PRIMARY KEY,
-    timestamp int(25) UNSIGNED NOT NULL,
+    timestamp BIGINT(11) UNSIGNED NULL,
     description varchar(255) NOT NULL,
     workleave_type varchar(255) NOT NULL,
-    starttime int(25) UNSIGNED NOT NULL,
-    endtime int(25) UNSIGNED NOT NULL,
+    starttime BIGINT(11) UNSIGNED NULL,
+    endtime BIGINT(11) UNSIGNED NULL,
     CONSTRAINT wle FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
     ON UPDATE CASCADE
@@ -54,8 +54,8 @@ CREATE TABLE workleave(
 
 CREATE TABLE worktime(
 	employee_id varchar(255) NOT NULL,
-    starttime int(25) UNSIGNED NOT NULL,
-    endtime int(25) UNSIGNED NOT NULL,
+    starttime BIGINT(11) UNSIGNED NULL,
+    endtime BIGINT(11) UNSIGNED NULL,
     location_start varchar(255) NOT NULL,
     location_end varchar(255) NOT NULL,
     PRIMARY KEY (employee_id),
@@ -67,10 +67,10 @@ CREATE TABLE worktime(
 
 CREATE TABLE history_salary(
 	employee_id varchar(255) NOT NULL,
-    timestamp int(25) UNSIGNED NOT NULL,
-    salary int(11) UNSIGNED NOT NULL,
-    overtime int(11) UNSIGNED NOT NULL,
-    commission int(11) UNSIGNED NOT NULL,
+    timestamp BIGINT(11) UNSIGNED NULL,
+    salary BIGINT(11) UNSIGNED NOT NULL,
+    overtime BIGINT(11) UNSIGNED NOT NULL,
+    commission BIGINT(11) UNSIGNED NOT NULL,
     PRIMARY KEY (employee_id),
     CONSTRAINT hse FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
@@ -83,9 +83,9 @@ CREATE TABLE commission(
     topic varchar(255) NOT NULL,
     description varchar(255) NOT NULL,
     quota_type varchar(255) NOT NULL,
-    quota_amount int(11) UNSIGNED NOT NULL,
+    quota_amount BIGINT(11) UNSIGNED NOT NULL,
     amount_type varchar(255) NOT NULL,
-    amount int(11) UNSIGNED NOT NULL,
+    amount BIGINT(11) UNSIGNED NOT NULL,
     order_type varchar(255) NOT NULL,
     PRIMARY KEY (commission_id)
 );
@@ -99,8 +99,8 @@ CREATE TABLE orderlist(
     order_status varchar(255) NOT NULL,
     tel char(10) NOT NULL,
     is_booking varchar(255) NOT NULL,
-    booking_time int(11) UNSIGNED NOT NULL,
-    arrival_time int(11) UNSIGNED NOT NULL,
+    booking_time BIGINT(11) UNSIGNED NOT NULL,
+    arrival_time BIGINT(11) UNSIGNED NOT NULL,
     code varchar(255),
     order_type varchar(255) NOT NULL,
     PRIMARY KEY (order_id)
@@ -129,8 +129,8 @@ CREATE TABLE customer(
     lname varchar(255) NOT NULL,
     email varchar(255) NOT NULL,
     picture_url varchar(255) NOT NULL,
-    firstlogin_time int(25) NOT NULL,
-    lastlogin_time int(25) NOT NULL,
+    firstlogin_time BIGINT(11) UNSIGNED NULL,
+    lastlogin_time BIGINT(11) UNSIGNED NULL,
     rank varchar(255) NOT NULL,
     customer_type varchar(255) NOT NULL
 );
@@ -157,13 +157,13 @@ CREATE TABLE package_info(
     package_name varchar(255) NOT NULL,
     package_desciption varchar(255) NOT NULL,
     reduce_type varchar(255) NOT NULL,
-    reduce int(11) UNSIGNED NOT NULL
+    reduce BIGINT(11) UNSIGNED NOT NULL
 );
 
 CREATE TABLE buy(
     customer_id varchar(255) NOT NULL PRIMARY KEY,
     package_id varchar(255) NOT NULL UNIQUE,
-    timestamp int(25) UNSIGNED NOT NULL,
+    time BIGINT(11) UNSIGNED NULL,
     CONSTRAINT bci
     FOREIGN KEY (customer_id)
     REFERENCES customer(customer_id)
@@ -196,7 +196,7 @@ CREATE TABLE service(
 CREATE TABLE price_per_type_s(
     service_id varchar(255) NOT NULL PRIMARY KEY,
     type_of_car varchar(255) NOT NULL,
-    price int(11) UNSIGNED NOT NULL,
+    price BIGINT(11) UNSIGNED NOT NULL,
     CONSTRAINT ppts
     FOREIGN KEY (service_id)
     REFERENCES service(service_id)
@@ -209,8 +209,8 @@ CREATE TABLE promotion(
     name varchar(255) NOT NULL,
     desciption varchar(255) NOT NULL,
     image varchar(255) NOT NULL,
-    starttime int(25) NOT NULL,
-    endtime int(25) NOT NULL,
+    starttime BIGINT(11) UNSIGNED NULL,
+    endtime BIGINT(11) UNSIGNED NULL,
     limitflag BOOLEAN,
     limit_amount int(11),
     limit_type varchar(255),
@@ -224,7 +224,7 @@ CREATE TABLE price_per_type_p(
     code varchar(255) NOT NULL PRIMARY KEY,
     type_of_car varchar(255) NOT NULL,
     reduce_type varchar(255) NOT NULL,
-    reduce int(11) UNSIGNED NOT NULL,
+    reduce BIGINT(11) UNSIGNED NOT NULL,
     CONSTRAINT pptp 
     FOREIGN KEY (code)
     REFERENCES promotion(code)
@@ -281,7 +281,7 @@ ADD CONSTRAINT cls
 CREATE TABLE generate_by(
     package_id varchar(255) NOT NULL PRIMARY KEY,
     service_id varchar(255) NOT NULL UNIQUE,
-    max int(11) UNSIGNED NOT NULL,
+    max BIGINT(11) UNSIGNED NOT NULL,
     CONSTRAINT gbp
     FOREIGN KEY (package_id)
     REFERENCES package_info(package_id)

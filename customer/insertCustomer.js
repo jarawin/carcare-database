@@ -53,7 +53,7 @@ function register(con, req, res) {
         if (result[0] == undefined){//? Not duplicate
           insertCus(con, sql2, res)
         }else{//? duplicate
-          res.status(501).send("Account already exists");
+          res.status(501).send({msg : "Account already exists"});
           console.log("Account already exists");
         }
       });

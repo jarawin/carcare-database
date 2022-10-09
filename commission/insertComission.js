@@ -1,8 +1,8 @@
 const insertCom = (con, sql2, res) => {
     con.query(sql2, (err, result) => {
       if (err) throw err;
-      res.status(200).send("insert service success");
-      console.log("insert service success");
+      res.status(200).send({msg:"insert commission success"});
+      console.log("insert commission success");
     });
   }
   
@@ -32,7 +32,7 @@ function insertCommission(con, req, res) {
         if (result[0] == undefined){//? Not duplicate
           insertCom(con, sql2, res)
         }else{//? duplicate
-          res.status(501).send("Commission already exists");
+          res.status(501).send({msg:"Commission already exists"});
           console.log("Commission already exists");
         }
       });

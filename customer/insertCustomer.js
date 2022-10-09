@@ -39,25 +39,27 @@ function register(con, req, res) {
         res.status(501).send(`picture_url is not url`)
         console.log(`image is not url`);
         return 0;
+      }else{
+        console.log("\ncheck url success");
+        con.connect((err) => {
+          if (err) throw err;
+          console.log("Connected!");
+          
+          con.query(sql1, (err, result) => {
+            if (err) throw err;
+            if (result[0] == undefined){//? Not duplicate
+              insertCus(con, sql2, res)
+            }else{//? duplicate
+              res.status(200).send(result);
+              console.log("Get customer success");
+            }
+          });
+        });
       }
-    console.log("check url success");
 
     
     
-    con.connect((err) => {
-      if (err) throw err;
-      console.log("\nConnected!");
-      
-      con.query(sql1, (err, result) => {
-        if (err) throw err;
-        if (result[0] == undefined){//? Not duplicate
-          insertCus(con, sql2, res)
-        }else{//? duplicate
-          res.status(501).send({msg : "Account already exists"});
-          console.log("Account already exists");
-        }
-      });
-    });
+    
   }
   
   export { register };

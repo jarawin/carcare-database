@@ -1,4 +1,4 @@
-import {register} from './insertCustomer'
+
 
 function getCustomeByc(con, req, res) {
     const customer_id = req.body.customer_id;
@@ -13,9 +13,8 @@ function getCustomeByc(con, req, res) {
         if (result[0] == undefined){//? Not have account
             res.status(501).send({msg : "Account does not exists"});
             console.log("Account does not exists");
-            register(con, req, res);
         }else{//? Have account
-          res.status(200).send({msg : "Get customer success"});
+          res.status(200).send(result);
           console.log("Get customer success");
         }
       });

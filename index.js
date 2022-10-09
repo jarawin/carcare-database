@@ -8,7 +8,10 @@ import {applyWork} from "./employee/applyWork.js"
 import {insertWage} from "./employee/employee_wage/insertWage.js"
 import {register} from "./customer/insertCustomer.js"
 import {getCustomeByc} from './customer/getCustomer.js'
+import {getAllcustomerBye} from "./customer/getCustomerAll.js"
 import {insertService} from "./service/insertService.js";
+import {getSerivecByc} from "./service/getService.js";
+import {getAllService} from "./service/getServiceAll.js";
 import {insertCommission} from "./commission/insertComission.js";
 import {insertPackage} from "./package/insertPackage.js"
 
@@ -49,12 +52,24 @@ app.post("/employee_wage/addwage", (req, res) => {
   insertWage(con, req, res)
 })
 
-app.get("/customer", (req, res) => {
+app.get("/customer/one", (req, res) => {
   getCustomeByc(con, req, res);
+})
+
+app.get("/customer/all", (req, res) => {
+  getAllcustomerBye(con, req, res);
 })
 
 app.post("/customer/register", (req, res) => {
   register(con, req, res)
+})
+
+app.get("/service/one", (req, res) => {
+  getSerivecByc(con, req, res);
+})
+
+app.get("/service/all", (req, res) => {
+  getAllService(con, req, res);
 })
 
 app.post("/service/insert", (req, res) => {

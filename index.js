@@ -7,8 +7,11 @@ import {getPromotion,getAllPromotion} from "./promotion/get_p.js"
 import {applyWork} from "./employee/applyWork.js"
 import {insertWage} from "./employee/employee_wage/insertWage.js"
 import {register} from "./customer/insertCustomer.js"
+import {getCustomeByc} from './customer/getCustomer.js'
 import {insertService} from "./service/insertService.js";
 import {insertCommission} from "./commission/insertComission.js";
+import {insertPackage} from "./package/insertPackage.js"
+
 
 const app = express();
 app.use(cors());
@@ -46,6 +49,10 @@ app.post("/employee_wage/addwage", (req, res) => {
   insertWage(con, req, res)
 })
 
+app.get("/customer", (req, res) => {
+  getCustomeByc(con, req, res);
+})
+
 app.post("/customer/register", (req, res) => {
   register(con, req, res)
 })
@@ -56,6 +63,10 @@ app.post("/service/insert", (req, res) => {
 
 app.post("/commission/insert", (req, res) => {
   insertCommission(con, req, res)
+})
+
+app.post("/package/insert", (req, res) => {
+  insertPackage(con, req, res)
 })
 
 const port = process.env.PORT || 3307;

@@ -1,8 +1,8 @@
 const insertCus = (con, sql2, res) => {
     con.query(sql2, (err, result) => {
       if (err) throw err;
-      res.status(200).send("applyment pending");
-      console.log("applyment pending");
+      res.status(200).send({msg:"insert customer success"});
+      console.log("insert customer success");
     });
   }
   

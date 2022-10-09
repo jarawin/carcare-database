@@ -53,7 +53,7 @@ async function insertService(con, req, res) {
             if (err) throw err;
             console.log("Connected!");
       
-            if(await checkCommission(con, sql0, res)){
+            if(!(await checkCommission(con, sql0, res))){
               res.status(501).send("Please add commission before add service")
               console.log("Please add commission before add service");
               return 0;

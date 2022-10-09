@@ -99,16 +99,18 @@ CREATE TABLE orderlist(
     order_status varchar(255) NOT NULL,
     tel char(10) NOT NULL,
     is_booking varchar(255) NOT NULL,
-    booking_time BIGINT(11) UNSIGNED NOT NULL,
-    arrival_time BIGINT(11) UNSIGNED NOT NULL,
-    code varchar(255),
+    booking_time BIGINT(11) UNSIGNED NULL,
+    arrived_time BIGINT(11) UNSIGNED NULL,
+    code varchar(255) NULL,
     order_type varchar(255) NOT NULL,
+    comment varchar(255) NULL,
     PRIMARY KEY (order_id)
 );
 
 CREATE TABLE make_commission(
-    employee_id varchar(255) NOT NULL PRIMARY KEY,
-    order_id varchar(255) NOT NULL UNIQUE,
+    employee_id varchar(255) NOT NULL,
+    order_id varchar(255) NOT NULL,
+    PRIMARY KEY(employee_id, order_id),
     CONSTRAINT mce 
     FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
@@ -125,19 +127,21 @@ ADD CONSTRAINT mcole
 
 CREATE TABLE customer(
 	customer_id varchar(255) NOT NULL PRIMARY KEY,
-    fname varchar(255) NOT NULL,
-    lname varchar(255) NOT NULL,
-    email varchar(255) NOT NULL,
-    picture_url varchar(255) NOT NULL,
+    fname varchar(255) NULL,
+    lname varchar(255) NULL,
+    email varchar(255) NULL,
+    picture_url varchar(255) NULL,
     firstlogin_time BIGINT(11) UNSIGNED NULL,
     lastlogin_time BIGINT(11) UNSIGNED NULL,
     rank varchar(255) NOT NULL,
-    customer_type varchar(255) NOT NULL
+    customer_type varchar(255) NOT NULL,
+    tel char(10) NOT NULL
 );
 
 CREATE TABLE make_order(
-    customer_id varchar(255) NOT NULL PRIMARY KEY,
-    order_id varchar(255) NOT NULL UNIQUE,
+    customer_id varchar(255) NOT NULL,
+    order_id varchar(255) NOT NULL,
+    PRIMARY KEY(customer_id, order_id),
     CONSTRAINT moc
     FOREIGN KEY (customer_id) 
     REFERENCES customer(customer_id)
@@ -161,9 +165,10 @@ CREATE TABLE package_info(
 );
 
 CREATE TABLE buy(
-    customer_id varchar(255) NOT NULL PRIMARY KEY,
-    package_id varchar(255) NOT NULL UNIQUE,
+    customer_id varchar(255) NOT NULL,
+    package_id varchar(255) NOT NULL,
     time BIGINT(11) UNSIGNED NULL,
+    PRIMARY KEY(customer_id, package_id),
     CONSTRAINT bci
     FOREIGN KEY (customer_id)
     REFERENCES customer(customer_id)
@@ -185,10 +190,21 @@ CREATE TABLE service(
     name varchar(255) NOT NULL,
     description varchar(255) NOT NULL,
     image varchar(255) NOT NULL,
-    commission_id  varchar(255) NOT NULL UNIQUE,
+    commission_id  varchar(255) NOT NULL,
     CONSTRAINT sci
     FOREIGN KEY (commission_id)
     REFERENCES commission(commission_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+CREATE TABLE service_items(
+    service_id varchar(255) NOT NULL PRIMARY KEY,
+    nmae varchar(255) NOT NULL,
+    period_time int(11) UNSIGNED NOT NULL,
+    CONSTRAINT ssi
+    FOREIGN KEY (service_id)
+    REFERENCES service(service_id)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 );
@@ -245,8 +261,9 @@ ADD CONSTRAINT pbdp
     	ON UPDATE CASCADE;
 
 CREATE TABLE can_reduce(
-	code varchar(255) NOT NULL PRIMARY KEY,
-    service_id varchar(255) NOT NULL UNIQUE,
+	code varchar(255) NOT NULL,
+    service_id varchar(255) NOT NULL,
+    PRIMARY KEY(code, service_id),
     CONSTRAINT crc
     FOREIGN KEY (code)
     REFERENCES promotion(code)
@@ -264,6 +281,7 @@ ADD CONSTRAINT crs
 CREATE TABLE included(
 	order_id varchar(255) NOT NULL PRIMARY KEY,
     service_id varchar(255) NOT NULL UNIQUE,
+    is_done boolean NOT NULL DEFAULT 0,
     CONSTRAINT clo
     FOREIGN KEY (order_id)
     REFERENCES orderlist(order_id)
@@ -279,9 +297,10 @@ ADD CONSTRAINT cls
         ON DELETE NO ACTION;
 
 CREATE TABLE generate_by(
-    package_id varchar(255) NOT NULL PRIMARY KEY,
-    service_id varchar(255) NOT NULL UNIQUE,
+    package_id varchar(255) NOT NULL,
+    service_id varchar(255) NOT NULL,
     max BIGINT(11) UNSIGNED NOT NULL,
+    PRIMARY KEY(package_id,service_id),
     CONSTRAINT gbp
     FOREIGN KEY (package_id)
     REFERENCES package_info(package_id)

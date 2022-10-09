@@ -7,17 +7,7 @@ const insertOrder = (con, sql2, res) => {
   });
 }
 
-function isValidHttpUrl(string) {
-  let url;
-  
-  try {
-    url = new URL(string);
-  } catch (_) {
-    return false;  
-  }
 
-  return url.protocol === "http:" || url.protocol === "https:";
-}
 
 const isPhoneNumber = (phone) => {
   var phoneno = /((\+66|0)(\d{1,2}\-?\d{3}\-?\d{3,4}))|((\+๖๖|๐)([๐-๙]{1,2}\-?[๐-๙]{3}\-?[๐-๙]{3,4}))/gm;
@@ -47,13 +37,13 @@ function insertOrderlist(con, req, res) {
                   VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}","${is_booking}","${booking_time}","${arrival_time}","${nickname}","${code}","${order_type}");`;
 
     //TODO check phone
-    if (!isPhoneNumber(tel)){
-      res.status(501).send({status:"Not tel format"})
-      console.log("Not tel format");
-      return 0;
-    }else{
-      console.log({status:"check phone success"});
-    }
+    // if (!isPhoneNumber(tel)){
+    //   res.status(501).send({status:"Not tel format"})
+    //   console.log("Not tel format");
+    //   return 0;
+    // }else{
+    //   console.log({status:"check phone success"});
+    // }
 
     // //TODO check URL
     // const arrayOfUrl = [["license_car",license_car], ["order_status",order_status], ["tel",tel], ["id_card",id_card], ["resume",resume ], ["house_registration",house_registration]]
@@ -71,16 +61,21 @@ function insertOrderlist(con, req, res) {
       if (err) throw err;
       console.log("\nConnected!");
       
-      con.query(sql1, (err, result) => {
+    //   con.query(sql1, (err, result) => {
+    //     if (err) throw err;
+    //     if (result[0] == undefined){//? Not duplicate
+    //       insertOrder(con, sql2, res)
+    //     }else{//? duplicate
+    //       res.status(501).send("Account already exists");
+    //       console.log("Account already exists");
+    //     }
+    //   });
+    // });
+      con.query(sql2, (err ,result) => {
         if (err) throw err;
-        if (result[0] == undefined){//? Not duplicate
-          insertOrder(con, sql2, res)
-        }else{//? duplicate
-          res.status(501).send("Account already exists");
-          console.log("Account already exists");
-        }
-      });
-    });
-  }
+        res.status(200).send({msg:"Insert order success"})
+        console.log("Insert order success");
+      })
+  })}
   
-  export {insertOrderlist};
+  export {insertOrderlist}

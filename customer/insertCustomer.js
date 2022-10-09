@@ -50,16 +50,12 @@ function register(con, req, res) {
             if (result[0] == undefined){//? Not duplicate
               insertCus(con, sql2, res)
             }else{//? duplicate
-              res.status(200).send(result);
+              res.status(200).send([{msg:"Get customer success"},{data:result}]);
               console.log("Get customer success");
             }
           });
         });
       }
-
-    
-    
-    
   }
   
   export { register };

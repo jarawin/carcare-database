@@ -14,6 +14,7 @@ import {getSerivecByc} from "./service/getService.js";
 import {getAllService} from "./service/getServiceAll.js";
 import {insertCommission} from "./commission/insertComission.js";
 import {insertPackage} from "./package/insertPackage.js"
+import {insertOrderlist} from "./orderList/insertOrder.js"
 
 
 const app = express();
@@ -82,6 +83,10 @@ app.post("/commission/insert", (req, res) => {
 
 app.post("/package/insert", (req, res) => {
   insertPackage(con, req, res)
+})
+
+app.post("/order/insert", (req, res) => {
+  insertOrderlist(con ,req, res)
 })
 
 const port = process.env.PORT || 3307;

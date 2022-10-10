@@ -48,7 +48,7 @@ function applyWork(con, req, res) {
     const resume = req.body.resume;//! url
     const house_registration = req.body.house_registration;//! url
     const sql1 = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
-    const sql2 = `INSERT INTO employee(employee_id,phone,email,picture_url,lastlogin_time,work_background,graduation_certificate,prefixname,fname,lname,nickname,wage_type,employee_type,address,id_card,resume,house_registration) 
+    const sql2 = `INSERT INTO employee(employee_id, phone, email, picture_url, lastlogin_time, work_background, graduation_certificate,prefixname, fname, lname, nickname, wage_type, employee_type, address, id_card, resume, house_registration) 
                   VALUES("${employee_id}","${phone}","${email}","${picture_url}","${lastlogin_time}","${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}","${wage_type}","${employee_type}","${address}","${id_card}","${resume}","${house_registration}");`;
 
     //TODO check phone

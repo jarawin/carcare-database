@@ -1,11 +1,5 @@
-
-const insertOrder = (con, sql2, res) => {
-  con.query(sql2, (err, result) => {
-    if (err) throw err;
-    res.status(200).send("applyment pending");
-    console.log("applyment pending");
-  });
-}
+import e from "express";
+import { v4 as uuidv4 } from "uuid";
 
 
 
@@ -18,9 +12,58 @@ const isPhoneNumber = (phone) => {
     }
 }
 
+const haveOrderId = (con, sql) => {
+  return new Promise((resolve, reject) => {
+    con.query(sql, (err, result) => {
+      if (err) throw err;
+      if (result[0] == undefined){//? Not duplicate
+        resolve(false)
+        console.log("Can insert order");
+      }else{//? duplicate
+        resolve(true)
+        console.log("key duplicate please insert again");
+      }
+    });
+  })
+}
+
+const haveCustomerId = (con, sql) => {
+  return new Promise((resolve, reject) => {
+    con.query(sql, (err, result) => {
+      if (err) throw err;
+      if (result[0] == undefined){//? Not duplicate
+        resolve(false)
+        console.log("Have not customer");
+      }else{//? duplicate
+        resolve(true)
+        console.log("Have customer");
+      }
+    });
+  })
+}
+
+const haveEmployeeId = async (con, sql) => {
+  return new Promise((resolve, reject) => {
+    con.query(sql, (err, result) => {
+      console.log(result);
+      if (err) throw err;
+      if (result[0] == undefined){//? Not duplicate
+        resolve(false)
+        console.log("Have not employee");
+      }else{//? duplicate
+        resolve(true)
+        console.log("Have employee");
+      }
+    });
+  })
+}
 
 function insertOrderlist(con, req, res) {
-    const order_id = req.body.order_id;
+    const customer_id = req.body.customer_id; //! please verify
+    console.log(customer_id);
+    const order_id = uuidv4(); //! please verify
+    const employee_id = req.body.employee_id; //! please verify
+    console.log(employee_id);
     const type_car = req.body.type_car;
     const color_car = req.body.color_car;
     const license_car = req.body.license_car;//! url
@@ -28,54 +71,68 @@ function insertOrderlist(con, req, res) {
     const order_status = req.body.order_status;//! url
     const tel = req.body.tel;//! url
     const is_booking = req.body.is_booking;
-    const booking_time = req.body.booking_time;
-    const arrival_time = req.body.arrival_time;
-    const code = req.body.code;
+    var booking_time = req.body?.booking_time ?? undefined;
+    var arrival_time = Date.now();;
+    const code = req.body.code; //! please verify
     const order_type = req.body.order_type;
-    const sql1 = `SELECT * FROM orderlist WHERE order_id = "${order_id}"`;
-    const sql2 = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,booking_time,arrival_time,nickname,code,order_type) 
-                  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}","${is_booking}","${booking_time}","${arrival_time}","${nickname}","${code}","${order_type}");`;
+    const comment = req.body?.comment??undefined;
 
-    //TODO check phone
-    // if (!isPhoneNumber(tel)){
-    //   res.status(501).send({status:"Not tel format"})
-    //   console.log("Not tel format");
-    //   return 0;
-    // }else{
-    //   console.log({status:"check phone success"});
-    // }
 
-    // //TODO check URL
-    // const arrayOfUrl = [["license_car",license_car], ["order_status",order_status], ["tel",tel], ["id_card",id_card], ["resume",resume ], ["house_registration",house_registration]]
-    // for (let i = 0; i < arrayOfUrl.length; i++){
-    //   if (!isValidHttpUrl(arrayOfUrl[i][1])){
-    //     res.status(501).send(`${arrayOfUrl[i][0]} is not url`)
-    //     return 0;
-    //   }
-    // }
-    // console.log("check url success");
-
+    const sqlEmployee = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
+    const sqlCustoemr = `SELECT * FROM customer WHERE customer_id = "${customer_id}"`;
+    const sqlorder = `SELECT * FROM orderlist WHERE order_id = "${order_id}"`;
+    var sqlB = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,booking_time,arrived_time,code,order_type, comment) 
+                  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${booking_time},${arrival_time},"${code}","${order_type}","${comment}");`;
     
-    
-    con.connect((err) => {
+    var sqlNB = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,arrived_time,code,order_type, comment) 
+                  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
+    con.connect(async (err) => {
       if (err) throw err;
       console.log("\nConnected!");
       
-    //   con.query(sql1, (err, result) => {
-    //     if (err) throw err;
-    //     if (result[0] == undefined){//? Not duplicate
-    //       insertOrder(con, sql2, res)
-    //     }else{//? duplicate
-    //       res.status(501).send("Account already exists");
-    //       console.log("Account already exists");
-    //     }
-    //   });
-    // });
-      con.query(sql2, (err ,result) => {
-        if (err) throw err;
-        res.status(200).send({msg:"Insert order success"})
-        console.log("Insert order success");
-      })
+      if (!(await haveEmployeeId(con, sqlEmployee))){
+        res.status(501).send({msg:"Not have employee id"})
+        return 0;
+      }
+
+      if (!(await haveCustomerId(con, sqlCustoemr))){
+        res.status(501).send({msg:"Not have customer id"})
+        return 0;
+      }
+
+      if (booking_time == undefined || booking_time == null){
+        console.log("Not have booking time");
+        res.status(501).send({msg:"Not have booking time"})
+        return 0;
+      }
+
+      if (await haveOrderId (con, sqlorder)){
+        res.status(501).send({msg:"key duplicate please insert again"})
+        return 0;
+      }
+
+      if (!isPhoneNumber){
+        console.log("is not phone number");
+        res.status(501).send({msg:"is not phone number"})
+        return 0;
+      }
+
+
+      if (is_booking){
+        console.log("Booking");
+        con.query(sqlB, (err ,result) => {
+          if (err) throw err;
+          res.status(200).send({msg:"Insert order success"})
+          console.log("Insert order success");
+        })
+      }else{
+        console.log("Not booking");
+        con.query(sqlNB, (err ,result) => {
+          if (err) throw err;
+          res.status(200).send({msg:"Insert order success"})
+          console.log("Insert order success");
+        })
+      }
   })}
   
   export {insertOrderlist}

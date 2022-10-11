@@ -1,11 +1,26 @@
 import e from "express";
 import { v4 as uuidv4 } from "uuid";
 
-const haveService = async (con, service_id) => {
+const createText = async (order_id, services) => {
+  var txt = `("${order_id}", "${services[0].service_id}")`;
+  for (let i = 1; i < services.length; i++){
+    txt += `,("${order_id}", "${services[i].service_id}")`
+  }
+  return txt
+}
+
+const haveService = async (con, services) => {
+  var txt = `("${services[0].service_id}"`
+  for (let i = 1; i < services.length; i++){
+    txt += `,"${services[i].service_id}"`
+  }
+  txt += `)`
+  console.log(txt);
+
   return new Promise((resolve, reject) => {
-    con.query(`SELECT * FROM service WHERE service_id = "${service_id}"`, (err, result) => {
+    con.query(`SELECT * FROM service WHERE service_id IN ${txt}`, (err, result) => {
       if (err) throw err;
-      if (result[0] == undefined){
+      if (result.length != services.length){
           resolve(false)
       }else{
         resolve(true)
@@ -69,8 +84,8 @@ const haveCustomerId = (con, sql) => {
 //   })
 // }
 
-const insertIncluded = async (con, order_id, service_id) => {
-  con.query(`INSERT INTO included(order_id, service_id) VALUES("${order_id}","${service_id}")`,(err, result) => {
+const insertIncluded = async (con, txt) => {
+  con.query(`INSERT INTO included(order_id, service_id) VALUES ${txt}`,(err, result) => {
     if (err) throw err;
   })
 }
@@ -109,6 +124,7 @@ function insertOrderlist(con, req, res) {
       if (err) throw err;
       console.log("\nConnected!");
       
+      
       // if (!(await haveEmployeeId(con, sqlEmployee))){
       //   res.status(501).send({msg:"Not have employee id"})
       //   return 0;
@@ -136,24 +152,29 @@ function insertOrderlist(con, req, res) {
         return 0;
       }
 
-      for (let i = 0; i < services.length; i++){
-        if (!(await haveService(con, services[i].service_id))){
-          console.log("Not have service");
-          res.status(501).send({msg:"Not have service"})
-          return 0;
-        }
-      }
+      // for (let i = 0; i < services.length; i++){
+      //   if (!(await haveService(con, services[i].service_id))){
+      //     console.log("Not have service");
+      //     res.status(501).send({msg:"Not have service"})
+      //     return 0;
+      //   }
+      // }
+      if (!(await haveService(con, services))){
+            console.log("Not have service");
+            res.status(501).send({msg:"Not have service"})
+            return 0;
+          }
 
-
+      var txtO = await createText(order_id, services);
       if (is_booking){
         console.log("Booking");
         con.query(sqlB, (err ,result) => {
           if (err) throw err;
           con.query(`INSERT INTO make_order VALUES("${customer_id}","${order_id}");`, async (err, result) => {
             if (err) throw err;
-            for (let i = 0; i < services.length; i++){
-              await insertIncluded(con, order_id, services[i].service_id)
-            }
+
+            await insertIncluded(con, txtO)
+
             res.status(200).send({msg:"Insert order success"})
             console.log("Insert order success");
           })
@@ -164,9 +185,9 @@ function insertOrderlist(con, req, res) {
           if (err) throw err;
           con.query(`INSERT INTO make_order VALUES("${customer_id}","${order_id}");`, async (err, result) => {
             if (err) throw err;
-            for (let i = 0; i < services.length; i++){
-              await insertIncluded(con, order_id, services[i].service_id)
-            }
+
+            await insertIncluded(con, txtO)
+
             res.status(200).send({msg:"Insert order success"})
             console.log("Insert order success");
           })
@@ -175,3 +196,5 @@ function insertOrderlist(con, req, res) {
   })}
   
   export {insertOrderlist}
+
+ 

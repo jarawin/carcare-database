@@ -1,17 +1,30 @@
+const createText = async (service_id,service_items, pricePerType) => {
+  var txt1 = `("${service_id}", "${service_items[0].name}", ${service_items[0].period_time})`;
+  for (let i = 1; i < service_items.length; i++){
+    txt1 += `,("${service_id}", "${service_items[i].name}", ${service_items[i].period_time})`
+  }
+
+  var txt2 = `("${service_id}", "${pricePerType[0].type_of_car}", ${pricePerType[0].price})`;
+  for (let i = 1; i < pricePerType.length; i++){
+    txt2 += `,("${service_id}", "${pricePerType[i].type_of_car}", ${pricePerType[i].price})`
+  }
+  return [txt1, txt2]
+}
+
 const insertSer = async (con, sql2) => {
     con.query(sql2, (err, result) => {
       if (err) throw err;
     });
   }
 
-const insertPricePerTypeS = async (con, service_id, type_of_car, price) => {
-  con.query(`INSERT INTO price_per_type_s VALUES("${service_id}","${type_of_car}","${price}")`, (err, result) => {
+const insertPricePerTypeS = async (con, txt) => {
+  con.query(`INSERT INTO price_per_type_s VALUES ${txt}`, (err, result) => {
     if (err) throw err;
   });
 }
 
-const insertServiceItem = async (con, service_id, name, time) =>{
-  con.query(`INSERT INTO service_items VALUES("${service_id}","${name}","${time}")`, (err, result) => {
+const insertServiceItem = async (con, txt) =>{
+  con.query(`INSERT INTO service_items VALUES ${txt}`, (err, result) => {
     if (err) throw err;
   });
 }
@@ -40,6 +53,7 @@ async function isValidHttpUrl(string) {
   
     return url.protocol === "http:" || url.protocol === "https:";
   }
+
 async function insertService(con, req, res) {
     const service_id = req.body.service_id;
     const name = req.body.name;
@@ -76,14 +90,11 @@ async function insertService(con, req, res) {
       con.query(sql1, async (err, result) => {
         if (err) throw err;
         if (result[0] == undefined){//? Not duplicate
+          var [txt1,txt2] = await createText(service_id,service_items, pricePerType)
           await insertSer(con, sql2, res)
-          for (let i = 0; i < pricePerType.length; i++){
-            await insertPricePerTypeS(con, service_id, pricePerType[i].type_of_car, pricePerType[i].price);
-          }
-          for (let i = 0; i < service_items.length; i++){
-            await insertServiceItem(con, service_id, service_items[i].name, service_items[i].period_time);
-          }
-
+          await insertPricePerTypeS(con, txt1);
+          await insertServiceItem(con, txt2);
+          
           res.status(200).send("insert service success");
           console.log("insert service success");
         }else{//? duplicate

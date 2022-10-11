@@ -1,7 +1,18 @@
 import e from "express";
 import { v4 as uuidv4 } from "uuid";
 
-
+const haveService = async (con, service_id) => {
+  return new Promise((resolve, reject) => {
+    con.query(`SELECT * FROM service WHERE service_id = "${service_id}"`, (err, result) => {
+      if (err) throw err;
+      if (result[0] == undefined){
+          resolve(false)
+      }else{
+        resolve(true)
+      }
+    })
+  })
+}
 
 const isPhoneNumber = (phone) => {
   var phoneno = /((\+66|0)(\d{1,2}\-?\d{3}\-?\d{3,4}))|((\+๖๖|๐)([๐-๙]{1,2}\-?[๐-๙]{3}\-?[๐-๙]{3,4}))/gm;
@@ -42,28 +53,35 @@ const haveCustomerId = (con, sql) => {
   })
 }
 
-const haveEmployeeId = async (con, sql) => {
-  return new Promise((resolve, reject) => {
-    con.query(sql, (err, result) => {
-      console.log(result);
-      if (err) throw err;
-      if (result[0] == undefined){//? Not duplicate
-        resolve(false)
-        console.log("Have not employee");
-      }else{//? duplicate
-        resolve(true)
-        console.log("Have employee");
-      }
-    });
+// const haveEmployeeId = async (con, sql) => {
+//   return new Promise((resolve, reject) => {
+//     con.query(sql, (err, result) => {
+//       console.log(result);
+//       if (err) throw err;
+//       if (result[0] == undefined){//? Not duplicate
+//         resolve(false)
+//         console.log("Have not employee");
+//       }else{//? duplicate
+//         resolve(true)
+//         console.log("Have employee");
+//       }
+//     });
+//   })
+// }
+
+const insertIncluded = async (con, order_id, service_id) => {
+  con.query(`INSERT INTO included(order_id, service_id) VALUES("${order_id}","${service_id}")`,(err, result) => {
+    if (err) throw err;
   })
 }
+
 
 function insertOrderlist(con, req, res) {
     const customer_id = req.body.customer_id; //! please verify
     console.log(customer_id);
     const order_id = uuidv4(); //! please verify
-    const employee_id = req.body.employee_id; //! please verify
-    console.log(employee_id);
+    // const employee_id = req.body.employee_id; //! please verify
+    // console.log(employee_id);
     const type_car = req.body.type_car;
     const color_car = req.body.color_car;
     const license_car = req.body.license_car;//! url
@@ -76,24 +94,25 @@ function insertOrderlist(con, req, res) {
     const code = req.body.code; //! please verify
     const order_type = req.body.order_type;
     const comment = req.body?.comment??undefined;
+    const services = req.body.services;
 
 
-    const sqlEmployee = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
+    // const sqlEmployee = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
     const sqlCustoemr = `SELECT * FROM customer WHERE customer_id = "${customer_id}"`;
     const sqlorder = `SELECT * FROM orderlist WHERE order_id = "${order_id}"`;
-    var sqlB = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,booking_time,arrived_time,code,order_type, comment) 
-                  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${booking_time},${arrival_time},"${code}","${order_type}","${comment}");`;
+    var sqlB = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,booking_time,code,order_type, comment) 
+                VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${booking_time},"${code}","${order_type}","${comment}");`;
     
     var sqlNB = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,arrived_time,code,order_type, comment) 
-                  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
+                VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
     con.connect(async (err) => {
       if (err) throw err;
       console.log("\nConnected!");
       
-      if (!(await haveEmployeeId(con, sqlEmployee))){
-        res.status(501).send({msg:"Not have employee id"})
-        return 0;
-      }
+      // if (!(await haveEmployeeId(con, sqlEmployee))){
+      //   res.status(501).send({msg:"Not have employee id"})
+      //   return 0;
+      // }
 
       if (!(await haveCustomerId(con, sqlCustoemr))){
         res.status(501).send({msg:"Not have customer id"})
@@ -117,20 +136,40 @@ function insertOrderlist(con, req, res) {
         return 0;
       }
 
+      for (let i = 0; i < services.length; i++){
+        if (!(await haveService(con, services[i].service_id))){
+          console.log("Not have service");
+          res.status(501).send({msg:"Not have service"})
+          return 0;
+        }
+      }
+
 
       if (is_booking){
         console.log("Booking");
         con.query(sqlB, (err ,result) => {
           if (err) throw err;
-          res.status(200).send({msg:"Insert order success"})
-          console.log("Insert order success");
+          con.query(`INSERT INTO make_order VALUES("${customer_id}","${order_id}");`, async (err, result) => {
+            if (err) throw err;
+            for (let i = 0; i < services.length; i++){
+              await insertIncluded(con, order_id, services[i].service_id)
+            }
+            res.status(200).send({msg:"Insert order success"})
+            console.log("Insert order success");
+          })
         })
       }else{
         console.log("Not booking");
         con.query(sqlNB, (err ,result) => {
           if (err) throw err;
-          res.status(200).send({msg:"Insert order success"})
-          console.log("Insert order success");
+          con.query(`INSERT INTO make_order VALUES("${customer_id}","${order_id}");`, async (err, result) => {
+            if (err) throw err;
+            for (let i = 0; i < services.length; i++){
+              await insertIncluded(con, order_id, services[i].service_id)
+            }
+            res.status(200).send({msg:"Insert order success"})
+            console.log("Insert order success");
+          })
         })
       }
   })}

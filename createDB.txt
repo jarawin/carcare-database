@@ -40,12 +40,13 @@ ADD CONSTRAINT eew
     	ON UPDATE CASCADE;
 
 CREATE TABLE workleave(
-    employee_id varchar(255) NOT NULL PRIMARY KEY,
+    employee_id varchar(255) NOT NULL,
     timestamp BIGINT(11) UNSIGNED NULL,
     description varchar(255) NOT NULL,
     workleave_type varchar(255) NOT NULL,
     starttime BIGINT(11) UNSIGNED NULL,
     endtime BIGINT(11) UNSIGNED NULL,
+    PRIMARY KEY(employee_id, timestamp),
     CONSTRAINT wle FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
     ON UPDATE CASCADE
@@ -58,7 +59,7 @@ CREATE TABLE worktime(
     endtime BIGINT(11) UNSIGNED NULL,
     location_start varchar(255) NOT NULL,
     location_end varchar(255) NOT NULL,
-    PRIMARY KEY (employee_id),
+    PRIMARY KEY (employee_id,starttime),
     CONSTRAINT wte FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
     ON UPDATE CASCADE
@@ -71,7 +72,7 @@ CREATE TABLE history_salary(
     salary BIGINT(11) UNSIGNED NOT NULL,
     overtime BIGINT(11) UNSIGNED NOT NULL,
     commission BIGINT(11) UNSIGNED NOT NULL,
-    PRIMARY KEY (employee_id),
+    PRIMARY KEY (employee_id,timestamp),
     CONSTRAINT hse FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
     ON UPDATE CASCADE
@@ -146,7 +147,7 @@ CREATE TABLE make_order(
     FOREIGN KEY (customer_id) 
     REFERENCES customer(customer_id)
     ON UPDATE CASCADE
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
 );
 
 ALTER TABLE make_order
@@ -199,9 +200,10 @@ CREATE TABLE service(
 );
 
 CREATE TABLE service_items(
-    service_id varchar(255) NOT NULL PRIMARY KEY,
+    service_id varchar(255) NOT NULL,
     nmae varchar(255) NOT NULL,
     period_time int(11) UNSIGNED NOT NULL,
+    PRIMARY KEY (service_id, nmae, period_time),
     CONSTRAINT ssi
     FOREIGN KEY (service_id)
     REFERENCES service(service_id)
@@ -210,9 +212,10 @@ CREATE TABLE service_items(
 );
 
 CREATE TABLE price_per_type_s(
-    service_id varchar(255) NOT NULL PRIMARY KEY,
+    service_id varchar(255) NOT NULL,
     type_of_car varchar(255) NOT NULL,
     price BIGINT(11) UNSIGNED NOT NULL,
+    PRIMARY KEY(service_id, type_of_car, price),
     CONSTRAINT ppts
     FOREIGN KEY (service_id)
     REFERENCES service(service_id)
@@ -237,10 +240,11 @@ CREATE TABLE promotion(
 );
 
 CREATE TABLE price_per_type_p(
-    code varchar(255) NOT NULL PRIMARY KEY,
+    code varchar(255) NOT NULL,
     type_of_car varchar(255) NOT NULL,
     reduce_type varchar(255) NOT NULL,
     reduce BIGINT(11) UNSIGNED NOT NULL,
+    PRIMARY KEY(code, type_of_car, reduce_type, reduce),
     CONSTRAINT pptp 
     FOREIGN KEY (code)
     REFERENCES promotion(code)
@@ -279,9 +283,10 @@ ADD CONSTRAINT crs
         ON DELETE CASCADE;
 
 CREATE TABLE included(
-	order_id varchar(255) NOT NULL PRIMARY KEY,
-    service_id varchar(255) NOT NULL UNIQUE,
+	order_id varchar(255) NOT NULL,
+    service_id varchar(255) NOT NULL,
     is_done boolean NOT NULL DEFAULT 0,
+    PRIMARY KEY(order_id,service_id),
     CONSTRAINT clo
     FOREIGN KEY (order_id)
     REFERENCES orderlist(order_id)

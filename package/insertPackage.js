@@ -1,15 +1,16 @@
 
 import { v4 as uuidv4 } from "uuid";
+import {insertGenerateBy} from "./generateBy/insertGenerate.js"
 
-const insertPack = (con, sql2, res) => {
+const insertPack = async (con, sql2, res) => {
     con.query(sql2, (err, result) => {
       if (err) throw err;
-      res.status(200).send({status:"insert package success"});
+      // res.status(200).send({status:"insert package success"});
       console.log("insert package success");
     });
   }
 
-const checkSSS = async (con, res, service_id) => {
+const checkService = async (con, res, service_id) => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT * FROM service WHERE service_id = "${service_id}"`, (err, result) => {
       if (err) throw err;
@@ -43,24 +44,32 @@ const checkSSS = async (con, res, service_id) => {
         console.log("\nConnected!");
         
         //! check service
+        var txt = ``
         for (let i = 0; i < detail.length; i++){
-          if (!(await checkSSS(con, res, detail[i].service_id))){
+          if (!(await checkService(con, res, detail[i].service_id))){
             res.status(501).send({status:`service does not exist`})
             console.log("service does not exist");
             return 0;
           }
+          if (i == 0){
+            txt += `("${package_id}","${detail[0].service_id}",${detail[0].max})`
+          }else{
+            txt += `,("${package_id}","${detail[i].service_id}",${detail[i].max})`
+          }
+          
         }
 
         console.log("Have service");
-            con.query(sql1, (err, result) => {
-              if (err) throw err;
-              if (result[0] == undefined){//? Not duplicate
-                insertPack(con, sql2, res)
-              }else{//? duplicate
-                res.status(501).send("Package already exists");
-                console.log("Package already exists");
-              }
-            });
+        con.query(sql1, async (err, result) => {
+          if (err) throw err;
+          if (result[0] == undefined){//? Not duplicate
+            await insertPack(con, sql2, res)
+            await insertGenerateBy(con, txt, res)
+          }else{//? duplicate
+            res.status(501).send("Package already exists");
+            console.log("Package already exists");
+          }
+        });
       });
     }
     

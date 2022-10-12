@@ -1,4 +1,17 @@
 import e from "express";
+
+const checkWageType = async (con, wage_type) => {
+  return new Promise((resolve, reject) => {
+    con.query(`SELECT * FROM employee_wage WHERE wage_type = "${wage_type}"`, (err, result) => {
+      if (err) throw err;
+      if (result[0] == undefined){
+        resolve(false);
+      }else{
+        resolve(true);
+      }
+    })
+  })
+}
 const insertApply = (con, sql2, res) => {
   con.query(sql2, (err, result) => {
     if (err) throw err;
@@ -29,12 +42,14 @@ const isPhoneNumber = (phone) => {
 }
 
 
-function applyWork(con, req, res) {
+async function applyWork(con, req, res) {
     const employee_id = req.body.employee_id;
-    const phone = req.body.phone;
+    // const firstwork_time = req.body.firstwork_time;
+    const lastlogin_time = Date.now();
+    const tel = req.body.tel;
     const email = req.body.email;
     const picture_url = req.body.picture_url;//! url
-    const lastlogin_time = Date.now();
+    const employee_type = req.body.employee_type;
     const work_background = req.body.work_background;//! url
     const graduation_certificate = req.body.graduation_certificate;//! url
     const prefixname = req.body.prefixname;
@@ -42,22 +57,22 @@ function applyWork(con, req, res) {
     const lname = req.body.lname;
     const nickname = req.body.nickname;
     const wage_type = req.body.wage_type;
-    const employee_type = req.body.employee_type;
+    const apply_status = req.body.apply_status;
     const address = req.body.address;
     const id_card = req.body.id_card;//! url
     const resume = req.body.resume;//! url
     const house_registration = req.body.house_registration;//! url
     const sql1 = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
-    const sql2 = `INSERT INTO employee(employee_id, phone, email, picture_url, lastlogin_time, work_background, graduation_certificate,prefixname, fname, lname, nickname, wage_type, employee_type, address, id_card, resume, house_registration) 
-                  VALUES("${employee_id}","${phone}","${email}","${picture_url}","${lastlogin_time}","${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}","${wage_type}","${employee_type}","${address}","${id_card}","${resume}","${house_registration}");`;
+    const sql2 = `INSERT INTO employee(employee_id, lastlogin_time, tel, email, picture_url, employee_type, work_background, graduation_certificate,prefixname, fname, lname, nickname, wage_type, apply_status, address, id_card, resume, house_registration) 
+                  VALUES("${employee_id}","${lastlogin_time}","${tel}","${email}","${picture_url}","${employee_type}","${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}","${wage_type}", ${apply_status},"${address}","${id_card}","${resume}","${house_registration}");`;
 
     //TODO check phone
-    if (!isPhoneNumber(phone)){
+    if (!isPhoneNumber(tel)){
       res.status(501).send("Not phone format")
       console.log("Not phone format");
       return 0;
     }else{
-      console.log("check phone success");
+      console.log("\ncheck phone success");
     }
 
     //TODO check URL
@@ -70,11 +85,16 @@ function applyWork(con, req, res) {
     }
     console.log("check url success");
 
+    if (!(await checkWageType(con, wage_type))){
+      console.log(`Not have ${wage_type} please insert wage_type before insert employee`);
+      res.status(501).send({msg:`Not have ${wage_type} please insert wage_type before insert employee`})
+      return 0;
+    }
     
     
     con.connect((err) => {
       if (err) throw err;
-      console.log("\nConnected!");
+      console.log("Connected!");
       
       con.query(sql1, (err, result) => {
         if (err) throw err;

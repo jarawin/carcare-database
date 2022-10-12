@@ -68,21 +68,7 @@ const haveCustomerId = (con, sql) => {
   })
 }
 
-// const haveEmployeeId = async (con, sql) => {
-//   return new Promise((resolve, reject) => {
-//     con.query(sql, (err, result) => {
-//       console.log(result);
-//       if (err) throw err;
-//       if (result[0] == undefined){//? Not duplicate
-//         resolve(false)
-//         console.log("Have not employee");
-//       }else{//? duplicate
-//         resolve(true)
-//         console.log("Have employee");
-//       }
-//     });
-//   })
-// }
+
 
 const insertIncluded = async (con, txt) => {
   con.query(`INSERT INTO included(order_id, service_id) VALUES ${txt}`,(err, result) => {
@@ -95,8 +81,6 @@ function insertOrderlist(con, req, res) {
     const customer_id = req.body.customer_id; //! please verify
     console.log(customer_id);
     const order_id = uuidv4(); //! please verify
-    // const employee_id = req.body.employee_id; //! please verify
-    // console.log(employee_id);
     const type_car = req.body.type_car;
     const color_car = req.body.color_car;
     const license_car = req.body.license_car;//! url

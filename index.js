@@ -2,10 +2,12 @@ import express, { json } from "express";
 import cors from "cors";
 import { createConnection } from "mysql2";
 import { v4 as uuidv4 } from "uuid";
-import {insertPromotion} from "./promotion/insert_p.js"
+import {insertPromotion} from "./promotion/insertPromotion.js"
 import {getPromotion,getAllPromotion} from "./promotion/get_p.js"
 import {applyWork} from "./employee/applyWork.js"
 import {insertWage} from "./employee/employee_wage/insertWage.js"
+import {insertWorkLeave} from "./employee/workleave/insertworkLeave.js"
+import {insertWorkTime} from "./employee/workTime/insertworkTime.js"
 import {register} from "./customer/insertCustomer.js"
 import {getCustomeByc} from './customer/getCustomer.js'
 import {getAllcustomerBye} from "./customer/getCustomerAll.js"
@@ -15,6 +17,7 @@ import {getAllService} from "./service/getServiceAll.js";
 import {insertCommission} from "./commission/insertComission.js";
 import {insertPackage} from "./package/insertPackage.js"
 import {insertOrderlist} from "./orderList/insertOrder.js"
+import {insertBuy} from "./customer/Buy/insertBuy.js";
 
 
 const app = express();
@@ -41,7 +44,7 @@ app.get("/allpromotion", (req, res) => {
   getAllPromotion(con, req, res);
 })
 
-app.put("/promotion", (req, res) => {
+app.post("/promotion", (req, res) => {
   insertPromotion(con, req, res);
 });
 
@@ -51,6 +54,14 @@ app.post("/employee/applywork", (req, res) => {
 
 app.post("/employee_wage/addwage", (req, res) => {
   insertWage(con, req, res)
+})
+
+app.post("/employee/workleave", (req, res) => {
+  insertWorkLeave(con, req, res)
+})
+
+app.post("/employee/workTime", (req, res) => {
+  insertWorkTime(con, req, res)
 })
 
 app.get("/customer/one", (req, res) => {
@@ -63,6 +74,10 @@ app.get("/customer/all", (req, res) => {
 
 app.post("/customer/register", (req, res) => {
   register(con, req, res)
+})
+
+app.post("/customer/buy",(req, res) => {
+  insertBuy(con, req, res)
 })
 
 app.get("/service/one", (req, res) => {

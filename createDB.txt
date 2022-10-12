@@ -1,3 +1,4 @@
+DROP DATABASE carcare;
 CREATE DATABASE carcare;
 
 USE carcare;
@@ -111,7 +112,7 @@ CREATE TABLE orderlist(
 CREATE TABLE make_commission(
     employee_id varchar(255) NOT NULL,
     order_id varchar(255) NOT NULL,
-    PRIMARY KEY(employee_id, order_id),
+    PRIMARY KEY(order_id),
     CONSTRAINT mce 
     FOREIGN KEY (employee_id) 
     REFERENCES employee(employee_id)
@@ -155,7 +156,7 @@ ADD CONSTRAINT mcolc
         FOREIGN KEY (order_id)
         REFERENCES orderlist(order_id)
         ON UPDATE CASCADE
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 
 CREATE TABLE package_info(
     package_id varchar(255) NOT NULL PRIMARY KEY,
@@ -201,9 +202,9 @@ CREATE TABLE service(
 
 CREATE TABLE service_items(
     service_id varchar(255) NOT NULL,
-    nmae varchar(255) NOT NULL,
+    name varchar(255) NOT NULL,
     period_time int(11) UNSIGNED NOT NULL,
-    PRIMARY KEY (service_id, nmae, period_time),
+    PRIMARY KEY (service_id, name, period_time),
     CONSTRAINT ssi
     FOREIGN KEY (service_id)
     REFERENCES service(service_id)
@@ -291,7 +292,7 @@ CREATE TABLE included(
     FOREIGN KEY (order_id)
     REFERENCES orderlist(order_id)
     ON UPDATE CASCADE
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
 );
 
 ALTER TABLE included
@@ -329,3 +330,8 @@ WHERE cc.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_i
 
 FROM customer AS c, buy AS b, package_info AS p, generate_by AS g, make_order AS m
 WHERE c.customer_id = b.customer_id AND b.package_id = p.package_id AND p.package_id = g.package_id;
+
+
+SELECT c.customer_id, c.fname, c.picture_url, c.rank, c.customer_type, o.order_id, o.type_car, o.color_car, o.license_car, o.nickname, o.order_status, o.tel, o.is_booking, o.booking_time, o.arrived_time, o.code, o.order_type, e.employee_id, e.fname, e.lname, e.picture_url
+FROM customer AS c, make_order AS mo, orderlist AS o, make_commission AS mc, employee AS e
+WHERE c.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = mc.order_id AND mc.employee_id = e.employee_id;

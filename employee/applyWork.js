@@ -63,8 +63,8 @@ async function applyWork(con, req, res) {
     const resume = req.body.resume;//! url
     const house_registration = req.body.house_registration;//! url
     const sql1 = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
-    const sql2 = `INSERT INTO employee(employee_id, lastlogin_time, tel, email, picture_url, employee_type, work_background, graduation_certificate,prefixname, fname, lname, nickname, wage_type, apply_status, address, id_card, resume, house_registration) 
-                  VALUES("${employee_id}","${lastlogin_time}","${tel}","${email}","${picture_url}","${employee_type}","${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}","${wage_type}", ${apply_status},"${address}","${id_card}","${resume}","${house_registration}");`;
+    const sql2 = `INSERT INTO employee(employee_id, lastlogin_time, tel, email, picture_url, employee_type, work_background, graduation_certificate,prefixname, fname, lname, nickname, wage_type, address, id_card, resume, house_registration) 
+                  VALUES("${employee_id}","${lastlogin_time}","${tel}","${email}","${picture_url}","${employee_type}","${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}","${wage_type}","${address}","${id_card}","${resume}","${house_registration}");`;
 
     //TODO check phone
     if (!isPhoneNumber(tel)){
@@ -101,7 +101,8 @@ async function applyWork(con, req, res) {
         if (result[0] == undefined){//? Not duplicate
           insertApply(con, sql2, res)
         }else{//? duplicate
-          res.status(501).send("Account already exists");
+          res.status(501).send({msg: "ok",isEmployee: true, 
+          data: result[0]});
           console.log("Account already exists");
         }
       });

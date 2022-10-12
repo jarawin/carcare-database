@@ -11,7 +11,7 @@ async function checkEmployee(con, sql1, res){
     })
 }
 
-const getAllcustomerBye = (con, req, res) => {
+const getAllpackage = (con, req, res) => {
     const employee_id = req.query.employee_id;
     var sql1 = `SELECT employee_id FROM employee WHERE employee_id = "${employee_id}"`;
     
@@ -25,11 +25,11 @@ const getAllcustomerBye = (con, req, res) => {
             console.log("Not employee");
             return 0;
         }
-        con.query("SELECT * FROM customer", (err, result) => {
+        con.query("SELECT * FROM package_info", (err, result) => {
             res.status(200).send({msg:"OK",data:result});
             console.log("Get all success");
         })
     })
 }
 
-export {getAllcustomerBye}
+export {getAllpackage}

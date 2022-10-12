@@ -92,8 +92,8 @@ async function insertService(con, req, res) {
         if (result[0] == undefined){//? Not duplicate
           var [txt1,txt2] = await createText(service_id,service_items, pricePerType)
           await insertSer(con, sql2, res)
-          await insertPricePerTypeS(con, txt1);
-          await insertServiceItem(con, txt2);
+          await insertPricePerTypeS(con, txt2);
+          await insertServiceItem(con, txt1);
           
           res.status(200).send("insert service success");
           console.log("insert service success");

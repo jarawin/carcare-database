@@ -4,10 +4,13 @@ import { createConnection } from "mysql2";
 import { v4 as uuidv4 } from "uuid";
 import {insertPromotion} from "./promotion/insertPromotion.js"
 import {getPromotion,getAllPromotion} from "./promotion/get_p.js"
+import { login } from "./employee/login.js";
 import {applyWork} from "./employee/applyWork.js"
 import {insertWage} from "./employee/employee_wage/insertWage.js"
 import {insertWorkLeave} from "./employee/workleave/insertworkLeave.js"
 import {insertWorkTime} from "./employee/workTime/insertworkTime.js"
+import { getOneEmployee } from "./employee/getEmployeeOne.js";
+import { getAllEmployee } from "./employee/getEmployeeAll.js";
 import {register} from "./customer/insertCustomer.js"
 import {getCustomeByc} from './customer/getCustomer.js'
 import {getAllcustomerBye} from "./customer/getCustomerAll.js"
@@ -17,7 +20,14 @@ import {getAllService} from "./service/getServiceAll.js";
 import {insertCommission} from "./commission/insertComission.js";
 import {insertPackage} from "./package/insertPackage.js"
 import {insertOrderlist} from "./orderList/insertOrder.js"
+import { getOrderlist } from "./orderList/getOrderlist.js";
 import {insertBuy} from "./customer/Buy/insertBuy.js";
+import {insertMakeCommission} from "./employee/makeCommission/insertMakecommission.js"
+import { getCommissionOne } from "./commission/getCommission.js";
+import { getCommissionAll } from "./commission/getCommissionAll.js";
+import { getPackageOne } from "./package/getPackageOne.js";
+import { getAllpackage } from "./package/getPackageAll.js";
+
 
 
 const app = express();
@@ -29,6 +39,7 @@ const con = createConnection({
   user: "root",
   password: "",
   database: "carcare",
+  multipleStatements:true
 });
 con.connect();
 
@@ -48,6 +59,19 @@ app.post("/promotion", (req, res) => {
   insertPromotion(con, req, res);
 });
 
+app.get("/employee/login", (req, res) => {
+  login(con, req, res);
+})
+
+app.get("/employee/one", (req, res) => {
+  getOneEmployee(con, req, res);
+})
+
+app.get("/employee/all", (req, res) => {
+  getAllEmployee(con, req, res);
+})
+
+
 app.post("/employee/applywork", (req, res) => {
   applyWork(con, req, res);
 });
@@ -62,6 +86,10 @@ app.post("/employee/workleave", (req, res) => {
 
 app.post("/employee/workTime", (req, res) => {
   insertWorkTime(con, req, res)
+})
+
+app.post("/employee/makeCommission", (req, res) => {
+  insertMakeCommission(con, req, res)
 })
 
 app.get("/customer/one", (req, res) => {
@@ -92,8 +120,24 @@ app.post("/service/insert", (req, res) => {
   insertService(con, req, res)
 })
 
+app.get("/commission/one", (req, res) => {
+  getCommissionOne(con, req ,res)
+})
+
+app.get("/commission/all", (req, res) => {
+  getCommissionAll(con, req ,res)
+})
+
 app.post("/commission/insert", (req, res) => {
   insertCommission(con, req, res)
+})
+
+app.get("/package/one", (req, res) => {
+  getPackageOne(con, req ,res)
+})
+
+app.get("/package/all", (req, res) => {
+  getAllpackage(con, req ,res)
 })
 
 app.post("/package/insert", (req, res) => {
@@ -102,6 +146,10 @@ app.post("/package/insert", (req, res) => {
 
 app.post("/order/insert", (req, res) => {
   insertOrderlist(con ,req, res)
+})
+
+app.get("/order/one", (req, res) => {
+  getOrderlist(con ,req, res)
 })
 
 const port = process.env.PORT || 3307;

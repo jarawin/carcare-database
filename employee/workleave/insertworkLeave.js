@@ -2,16 +2,18 @@ const haveEmployeeId = async (con, sql) => {
   return new Promise((resolve, reject) => {
     con.query(sql, (err, result) => {
       if (err) throw err;
-      if (result[0] == undefined){//? Not duplicate
-        resolve(false)
+      if (result[0] == undefined) {
+        //? Not duplicate
+        resolve(false);
         console.log("Invalid employee id");
-      }else{//? duplicate
-        resolve(true)
+      } else {
+        //? duplicate
+        resolve(true);
         console.log("Valid employee id");
       }
     });
-  })
-}
+  });
+};
 
 async function insertWorkLeave(con, req, res) {
   const employee_id = req.body?.employee_id;
@@ -22,25 +24,24 @@ async function insertWorkLeave(con, req, res) {
   const endtime = req.body?.endtime;
 
   const sqlEmployee = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
-  var sql1 = `INSERT INTO workTime(employee_id, timestamp, description, workleave_type, starttime, endtime) 
+  var sql1 = `INSERT INTO workleave(employee_id, timestamp, description, workleave_type, starttime, endtime) 
   VALUES("${employee_id}", ${timestamp}, "${description}", "${workleave_type}", ${starttime}, ${endtime})`;
-
 
   con.connect(async (err) => {
     if (err) throw err;
     console.log("\nConnected!");
 
-    if (!(await haveEmployeeId(con, sqlEmployee))){
-        res.status(501).send({msg:"Invalid employee id"});
-        return 0;
+    if (!(await haveEmployeeId(con, sqlEmployee))) {
+      res.status(501).send({ msg: "Invalid employee id" });
+      return 0;
     }
 
-    con.query(sql1,(err, result) => {
-        if (err) throw err;
-        console.log("insert work leave success");
-        res.status(200).send({msg:"insert work leave success"})
-        });
-    })
+    con.query(sql1, (err, result) => {
+      if (err) throw err;
+      console.log("insert work leave success");
+      res.status(200).send({ msg: "insert work leave success" });
+    });
+  });
 }
 
-export {insertWorkLeave};
+export { insertWorkLeave };

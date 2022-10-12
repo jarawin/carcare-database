@@ -28,9 +28,10 @@ function register(con, req, res) {
     const lastlogin_time = Date.now();
     const rank = req.body.rank;
     const customer_type = req.body.customer_type;
+    const tel = req.body.tel;
     const sql1 = `SELECT * FROM customer WHERE customer_id = "${customer_id}"`;
-    const sql2 = `INSERT INTO customer(customer_id, fname, lname, email, picture_url, firstlogin_time, lastlogin_time, rank, customer_type) 
-                  VALUES("${customer_id}","${fname}","${lname}","${email}","${picture_url}","${firstlogin_time}","${lastlogin_time}","${rank}","${customer_type}");`;
+    const sql2 = `INSERT INTO customer(customer_id, fname, lname, email, picture_url, firstlogin_time, lastlogin_time, rank, customer_type, tel) 
+                  VALUES("${customer_id}","${fname}","${lname}","${email}","${picture_url}","${firstlogin_time}","${lastlogin_time}","${rank}","${customer_type}","${tel}");`;
 
 
     //TODO check URL
@@ -50,7 +51,7 @@ function register(con, req, res) {
             if (result[0] == undefined){//? Not duplicate
               insertCus(con, sql2, res)
             }else{//? duplicate
-              res.status(200).send([{msg:"Get customer success"},{data:result}]);
+              res.status(200).send([{msg:"Get customer success"},{data:result[0]}]);
               console.log("Get customer success");
             }
           });

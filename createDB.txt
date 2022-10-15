@@ -158,6 +158,7 @@ ADD CONSTRAINT mcolc
         ON UPDATE CASCADE
         ON DELETE CASCADE;
 
+
 CREATE TABLE package_info(
     package_id varchar(255) NOT NULL PRIMARY KEY,
     package_name varchar(255) NOT NULL,
@@ -170,7 +171,7 @@ CREATE TABLE buy(
     customer_id varchar(255) NOT NULL,
     package_id varchar(255) NOT NULL,
     time BIGINT(11) UNSIGNED NULL,
-    PRIMARY KEY(customer_id, package_id),
+    PRIMARY KEY(customer_id, package_id, time),
     CONSTRAINT bci
     FOREIGN KEY (customer_id)
     REFERENCES customer(customer_id)
@@ -287,6 +288,7 @@ CREATE TABLE included(
 	order_id varchar(255) NOT NULL,
     service_id varchar(255) NOT NULL,
     is_done boolean NOT NULL DEFAULT 0,
+    usePackage boolean NOT NULL DEFAULT 0,
     PRIMARY KEY(order_id,service_id),
     CONSTRAINT clo
     FOREIGN KEY (order_id)
@@ -322,16 +324,55 @@ ADD CONSTRAINT gbs
         ON DELETE CASCADE;
 
 CREATE VIEW member_info AS
-SELECT c.customer_id, p.package_id, g.service_id, g.max, (
+SELECT c.customer_id, g.service_id, SUM(g.max) AS totalUse, (
     
 SELECT COUNT(*) 
 FROM customer AS cc, make_order AS mo, orderlist AS o, included AS i
-WHERE cc.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = i.order_id AND g.service_id = i.service_id) AS usages
+WHERE cc.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = i.order_id AND g.service_id = i.service_id AND o.order_type = "MEMBER") AS usages
 
-FROM customer AS c, buy AS b, package_info AS p, generate_by AS g, make_order AS m
-WHERE c.customer_id = b.customer_id AND b.package_id = p.package_id AND p.package_id = g.package_id;
+FROM customer AS c, buy AS b, package_info AS p, generate_by AS g
+WHERE c.customer_id = b.customer_id AND b.package_id = p.package_id AND p.package_id = g.package_id
+GROUP BY g.service_id;
 
+CREATE VIEW rank_info AS
+SELECT c.customer_id, c.rank, SUM(ppts.price) AS sumPrice
+FROM customer AS c, make_order AS mo, orderlist AS o, included AS i, service AS s, price_per_type_s AS ppts
+WHERE c.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = i.order_id AND i.service_id = s.service_id AND s.service_id = ppts.service_id AND o.type_car = ppts.type_of_car
+GROUP BY c.customer_id;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 SELECT c.customer_id, c.fname, c.picture_url, c.rank, c.customer_type, o.order_id, o.type_car, o.color_car, o.license_car, o.nickname, o.order_status, o.tel, o.is_booking, o.booking_time, o.arrived_time, o.code, o.order_type, e.employee_id, e.fname, e.lname, e.picture_url
 FROM customer AS c, make_order AS mo, orderlist AS o, make_commission AS mc, employee AS e
 WHERE c.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = mc.order_id AND mc.employee_id = e.employee_id;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CREATE VIEW Commission_limit AS
+SELECT s.commission_id, c.quota_type, c.quota_amount, COUNT(i.can_receive_commission) AS usages
+FROM orderlist AS o, included AS i, service AS s, commission AS c
+WHERE o.order_id = i.order_id AND i.service_id = s.service_id AND s.commission_id = c.commission_id AND i.can_receive_commission = 1 AND (o.arrived_time/1000) > (SELECT UNIX_TIMESTAMP(CURRENT_DATE))
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT s.commission_id AS commission_id,COUNT(s.commission_id) AS spend
+FROM orderlist AS o, included AS i, service AS s
+WHERE o.order_id = i.order_id AND i.service_id = s.service_id AND o.order_id = "0bd3128d-d11d-4913-b8f0-914ccc107869"
+GROUP BY s.commission_id;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+SELECT o.order_id,i.service_id,i.can_receive_commission
+FROM orderlist AS o, included AS i, service AS s
+WHERE o.order_id = i.order_id AND i.service_id = s.service_id;
+
+`SELECT amount_type, amount 
+    FROM service AS s, commission AS c 
+    WHERE s.commission_id = c.commission_id AND s.service_id = "${service_id}"`
+
+    SELECT s.commission_id, c.quota_type, c.quota_amount, COUNT(i.can_receive_commission) AS usages
+FROM orderlist AS o, included AS i, service AS s, commission AS c
+WHERE o.order_id = i.order_id AND i.service_id = s.service_id AND s.commission_id = c.commission_id AND i.can_receive_commission = 1
+GROUP BY s.commission_id;
+
+SELECT s.commission_id, c.quota_type, c.quota_amount, COUNT(i.can_receive_commission) AS usages
+FROM orderlist AS o, included AS i, service AS s, commission AS c
+WHERE o.order_id = i.order_id AND i.service_id = s.service_id AND s.commission_id = c.commission_id AND i.can_receive_commission = 1 AND (o.arrived_time/1000) > (SELECT UNIX_TIMESTAMP(CURRENT_DATE))
+GROUP BY s.commission_id;
+
+
+

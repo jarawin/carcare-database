@@ -1,6 +1,6 @@
-async function login(con, req, res) {
-    const employee_id = req.query.employee_id;
-    const sql1 = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
+async function loginC(con, req, res) {
+    const customer_id = req.query.customer_id;
+    const sql1 = `SELECT * FROM customer WHERE customer_id = "${customer_id}"`;
     
     con.connect((err) => {
       if (err) throw err;
@@ -9,11 +9,11 @@ async function login(con, req, res) {
       con.query(sql1, (err, result) => {
         if (err) throw err;
         if (result[0] == undefined){//? Not duplicate
-            res.status(501).send({msg: "err",isEmployee: false, 
+            res.status(200).send({msg: "OK",isCustomer: false, 
             data: result[0]});
-            console.log("Account already exists");
+            console.log("Account not exists");
         }else{//? duplicate
-            res.status(200).send({msg: "ok",isEmployee: true, 
+            res.status(200).send({msg: "OK",isCustomer: true, 
             data: result[0]});
             console.log("Account already exists");
         }
@@ -21,4 +21,4 @@ async function login(con, req, res) {
     });
   }
   
-export {login};
+export {loginC};

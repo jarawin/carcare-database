@@ -50,6 +50,9 @@ const haveOrderIdInMakeCommmission = (con, sql) => {
   });
 };
 
+
+
+
 async function insertMakeCommission(con, req, res) {
   const employee_id = req.body?.employee_id;
   const order_id = req.body?.order_id;

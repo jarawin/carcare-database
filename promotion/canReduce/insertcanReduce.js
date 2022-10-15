@@ -3,7 +3,7 @@ const insertCanReduce = async (con, sql, res) => {
     if (err) throw err;
 
     console.log("insert can_reduce success");
-    res.status(200).send("{msg : OK}");
+    res.status(200).send({msg : "OK"});
   });
 };
 

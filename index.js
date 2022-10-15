@@ -13,7 +13,6 @@ import { getOneEmployee } from "./employee/getEmployeeOne.js";
 import { getAllEmployee } from "./employee/getEmployeeAll.js";
 import {register} from "./customer/insertCustomer.js"
 import {getCustomeByc} from './customer/getCustomer.js'
-import {getAllcustomerBye} from "./customer/getCustomerAll.js"
 import {insertService} from "./service/insertService.js";
 import {getSerivecByc} from "./service/getService.js";
 import {getAllService} from "./service/getServiceAll.js";
@@ -27,11 +26,14 @@ import { getCommissionOne } from "./commission/getCommission.js";
 import { getCommissionAll } from "./commission/getCommissionAll.js";
 import { getPackageOne } from "./package/getPackageOne.js";
 import { getAllpackage } from "./package/getPackageAll.js";
-
+import { loginC } from "./customer/loginC.js"; 
+import { deleteCustomer } from "./customer/deleteCustomer.js";
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: '*'
+}));
 app.use(json());
 
 const con = createConnection({
@@ -92,13 +94,14 @@ app.post("/employee/makeCommission", (req, res) => {
   insertMakeCommission(con, req, res)
 })
 
-app.get("/customer/one", (req, res) => {
+app.get("/customer", (req, res) => {
   getCustomeByc(con, req, res);
 })
 
-app.get("/customer/all", (req, res) => {
-  getAllcustomerBye(con, req, res);
+app.get("/customer/check", (req, res) => {
+  loginC(con, req, res);
 })
+
 
 app.post("/customer/register", (req, res) => {
   register(con, req, res)
@@ -106,6 +109,10 @@ app.post("/customer/register", (req, res) => {
 
 app.post("/customer/buy",(req, res) => {
   insertBuy(con, req, res)
+})
+
+app.delete("/customer", (req, res) => {
+  deleteCustomer(con, req, res)
 })
 
 app.get("/service/one", (req, res) => {
@@ -150,6 +157,12 @@ app.post("/order/insert", (req, res) => {
 
 app.get("/order/one", (req, res) => {
   getOrderlist(con ,req, res)
+})
+
+app.put("", (req, res) => {
+  if (req.body?.fname){
+    //! update
+  }
 })
 
 const port = process.env.PORT || 3307;

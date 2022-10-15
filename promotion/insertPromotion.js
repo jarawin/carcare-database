@@ -108,7 +108,7 @@ async function insertPromotion(con, req, res) {
           });
         } else {
           console.log(`code ${result[0].code} is duplicate`);
-          res.status(404).send("{code : duplicate}");
+          res.status(501).send({msg: `code ${result[0].code} is duplicate`});
           return 0;
         }
       }

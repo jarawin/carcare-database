@@ -65,6 +65,7 @@ function insertBuy(con, req, res) {
       }
 
       if (!(await havePackageId (con, packages))){
+        console.log("Not have package");
         res.status(501).send({msg:"Not have package"})
         return 0;
       }

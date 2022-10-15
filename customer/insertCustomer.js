@@ -18,21 +18,27 @@ function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function register(con, req, res) {
-    const customer_id = req.body.customer_id;
+
+async function register(con, req, res) {
+    var customer_id = req.body?.customer_id;
     const fname = req.body.fname;
     const lname = req.body.lname;
     const email = req.body.email;
     const picture_url = req.body.picture_url;//! url
     const firstlogin_time = Date.now();
     const lastlogin_time = Date.now();
-    const rank = req.body.rank;
-    const customer_type = req.body.customer_type;
+    const rank = "BRONZE";
+    const customer_type = "GENERAL";
     const tel = req.body.tel;
     const sql1 = `SELECT * FROM customer WHERE customer_id = "${customer_id}"`;
     const sql2 = `INSERT INTO customer(customer_id, fname, lname, email, picture_url, firstlogin_time, lastlogin_time, rank, customer_type, tel) 
                   VALUES("${customer_id}","${fname}","${lname}","${email}","${picture_url}","${firstlogin_time}","${lastlogin_time}","${rank}","${customer_type}","${tel}");`;
 
+    if(customer_id == undefined){
+      res.status(501).send(`Invalid customer id`)
+      console.log(`Invalid customer id`);
+      return 0;
+    }
 
     //TODO check URL
     
@@ -51,7 +57,7 @@ function register(con, req, res) {
             if (result[0] == undefined){//? Not duplicate
               insertCus(con, sql2, res)
             }else{//? duplicate
-              res.status(200).send([{msg:"Get customer success"},{data:result[0]}]);
+              res.status(200).send({msg:"Get customer success",data:result[0]});
               console.log("Get customer success");
             }
           });

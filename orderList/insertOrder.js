@@ -261,8 +261,11 @@ function insertOrderlist(con, req, res) {
             await upRank(con, customer_id);
             // await canReceiveCom(con, order_id);
 
-            res.status(200).send({ msg: "Insert order success" });
-            console.log("Insert order success");
+            con.query(`UPDATE customer SET customer_type = "MEMBER" WHERE customer_id = "${customer_id}"`, (err, result) => {
+              if (err) throw err;
+              res.status(200).send({ msg: "Insert order success" });
+              console.log("Insert order success");
+            })
           }
         );
       });
@@ -272,15 +275,31 @@ function insertOrderlist(con, req, res) {
         if (err) throw err;
         con.query(
           `INSERT INTO make_order VALUES("${customer_id}","${order_id}");`,//! insert make order
-          async (err, result) => {
+          async (err, result1) => {
             if (err) throw err;
 
             await insertIncluded(con, txtO);
             await upRank(con, customer_id);
             // await canReceiveCom(con, order_id);
+            con.query(`SELECT * FROM member_info WHERE customer_id = "${customer_id}"`, (err, result2) => {
+              if (err) throw err;
+              let status = 0;
+              for (let i = 0; i < result2.length; i++){
+                if(result2[i].totalUse <= result2[i].usages){
+                  status = 1;
+                }else{
+                  status = 0;
+                }
+              }
+              if (status == 1){
+                con.query(`UPDATE customer SET customer_type = "GENERAL" WHERE customer_id = "${customer_id}"`, (err, result) => {
+                  if (err) throw err;
+                })
+              }
 
-            res.status(200).send({ msg: "Insert order success" });
-            console.log("Insert order success");
+              res.status(200).send({ msg: "Insert order success" });
+              console.log("Insert order success");
+            })
           }
         );
       });

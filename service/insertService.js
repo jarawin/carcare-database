@@ -55,7 +55,7 @@ async function isValidHttpUrl(string) {
   }
 
 async function insertService(con, req, res) {
-    const service_id = req.body.service_id;
+    const service_id = req.body?.service_id;
     const name = req.body.name;
     const description = req.body.description;
     const image = req.body.image;
@@ -81,7 +81,7 @@ async function insertService(con, req, res) {
       console.log("Connected!");
 
       if(!(await checkCommission(con, sql0, res))){
-        res.status(501).send("Please add commission before add service")
+        res.status(501).send({msg:"Please add commission before add service"})
         console.log("Please add commission before add service");
         return 0;
       }
@@ -95,10 +95,10 @@ async function insertService(con, req, res) {
           await insertPricePerTypeS(con, txt2);
           await insertServiceItem(con, txt1);
           
-          res.status(200).send("insert service success");
+          res.status(200).send({msg:"insert service success"});
           console.log("insert service success");
         }else{//? duplicate
-          res.status(501).send("Service already exists");
+          res.status(501).send({msg:"Service already exists"});
           console.log("Service already exists");
         }
       });

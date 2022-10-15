@@ -2,7 +2,7 @@ const deleteCustomer = (con, req, res) => {
     var customer_id = req.query?.customer_id;
     if (!customer_id){
         // console.log(JSON.stringify(customer_id));
-        res.status(200).send({msg:"Customer id does not exist eiei"})
+        res.status(200).send({msg:"Customer id does not exist"})
         return 0;
     }else{
         const sql1 = `SELECT * FROM customer WHERE customer_id = "${customer_id}"`;
@@ -16,12 +16,8 @@ const deleteCustomer = (con, req, res) => {
                     res.status(200).send({msg:"Delete success",data:result[0]})
                 })
             }
-            
-            
-        })
-        
+        })    
     }
-    
 }
 
 export {deleteCustomer}

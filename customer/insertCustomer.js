@@ -18,6 +18,14 @@ function isValidHttpUrl(string) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
+const isPhoneNumber = (phone) => {
+  var phoneno = /((\+66|0)(\d{1,2}\-?\d{3}\-?\d{3,4}))|((\+๖๖|๐)([๐-๙]{1,2}\-?[๐-๙]{3}\-?[๐-๙]{3,4}))/gm;
+  if(phone.match(phoneno)){
+      return true;
+  }else{
+      return false;
+  }
+}
 
 async function register(con, req, res) {
     var customer_id = req.body?.customer_id;
@@ -38,6 +46,15 @@ async function register(con, req, res) {
       res.status(501).send(`Invalid customer id`)
       console.log(`Invalid customer id`);
       return 0;
+    }
+    
+    //TODO check phone
+    if (!isPhoneNumber(tel)){
+      res.status(501).send("Not phone format")
+      console.log("Not phone format");
+      return 0;
+    }else{
+      console.log("\ncheck phone success");
     }
 
     //TODO check URL

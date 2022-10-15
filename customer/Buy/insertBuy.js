@@ -73,8 +73,11 @@ function insertBuy(con, req, res) {
       var txtO = await createText(customer_id, packages, time);
       con.query(`INSERT INTO buy VALUES ${txtO};`, (err ,result) => {
         if (err) throw err;
-        res.status(200).send({msg:"Insert buy success"})
         console.log("Insert buy success");
+        con.query(`UPDATE customer SET customer_type = "MEMBER" WHERE customer_id = "${customer_id}"`, (err, result) => {
+          if (err) throw err;
+          res.status(200).send({msg:"Insert buy success"})
+        })
       })
   })}
   

@@ -1,33 +1,33 @@
-const haveEmployeeId = async (con, sql) => {
-    return new Promise((resolve, reject) => {
-      con.query(sql, (err, result) => {
-        if (err) throw err;
-        if (result[0] == undefined) {
-          //? Not duplicate
-          resolve(false);
-          console.log("Invalid employee id");
-        } else {
-          //? duplicate
-            // if (result[0].apply_status != "pending"){
+// const haveEmployeeId = async (con, sql) => {
+//     return new Promise((resolve, reject) => {
+//       con.query(sql, (err, result) => {
+//         if (err) throw err;
+//         if (result[0] == undefined) {
+//           //? Not duplicate
+//           resolve(false);
+//           console.log("Invalid employee id");
+//         } else {
+//           //? duplicate
+//             // if (result[0].apply_status != "pending"){
 
-            // }
-          resolve(true);
-          console.log("Valid employee id");
-        }
-      });
-    });
-  };
+//             // }
+//           resolve(true);
+//           console.log("Valid employee id");
+//         }
+//       });
+//     });
+//   };
 
 function getOrderlist(con, req, res) {
-    const employee_id = req.query.employee_id;
+    // const employee_id = req.query.employee_id;
     const order_id = req.query.order_id;
     var canReduce = 0;
     var totalCommission = 0;
     var reduceService = [];
     
-    const sql0 = `SELECT *
-                  FROM make_commission AS mc
-                  WHERE order_id = "${order_id}";`
+    // const sql0 = `SELECT *
+    //               FROM make_commission AS mc
+    //               WHERE order_id = "${order_id}";`
     const sql1 = `SELECT o.order_id, o.type_car, o.color_car, o.license_car, o.nickname, o.order_status, o.tel, o.is_booking, o.booking_time, o.arrived_time, o.code, o.order_type, o.comment, SUM(ps.price) AS total_price
                   FROM orderlist AS o, included AS i, service AS s, price_per_type_s AS ps
                   WHERE o.order_id = i.order_id AND i.service_id = s.service_id AND s.service_id = ps.service_id AND ps.type_of_car = o.type_car AND o.order_id = "${order_id}"
@@ -43,15 +43,16 @@ function getOrderlist(con, req, res) {
                   WHERE o.order_id = i.order_id AND i.service_id = s.service_id AND s.commission_id = c.commission_id AND o.order_id = "${order_id}"
                   GROUP BY s.service_id;`
     
-    const sqlEmployee = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
+    // const sqlEmployee = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
     con.connect(async (err) => {
         if (err) throw err;
         console.log("\nConnected!");
 
-        if (!(await haveEmployeeId(con, sqlEmployee))){
-            res.status(501).send({ msg: "Invalid employee id" });
-            return 0;
-        }
+        // if (!(await haveEmployeeId(con, sqlEmployee))){
+        //     res.status(501).send({ msg: "Invalid employee id" });
+        //     return 0;
+        // }
+        
 
         con.query(sql1, (err, result1) => {
             if (err) throw err;

@@ -74,7 +74,7 @@ app.get("/", loginMiddleware, (req, res) => {
   res.send("Hello Peem");
 });
 
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/promotion", loginMiddleware, (req, res) => {
   getPromotion(con, req, res);
 })
@@ -86,7 +86,7 @@ app.post("/promotion", loginMiddleware, (req, res) => {
 app.delete("/promotion", loginMiddleware, (req, res) => {
   deletePromotion(con, req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/employee/login", loginMiddleware, (req, res) => {
   login(con, req, res);
 })
@@ -114,7 +114,7 @@ app.post("/employee/workTime", loginMiddleware, (req, res) => {
 app.post("/employee/makeCommission", loginMiddleware, (req, res) => {
   insertMakeCommission(con, req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/customer", loginMiddleware, (req, res) => {
   getCustomer(con, req, res);
 })
@@ -130,7 +130,7 @@ app.put("/customer", loginMiddleware, (req, res) => {
 app.delete("/customer", loginMiddleware, (req, res) => {
   deleteCustomer(con, req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/customer/buy", loginMiddleware, (req, res) => {
   getBuy(con, req, res)
 })
@@ -142,7 +142,7 @@ app.post("/customer/buy",loginMiddleware, (req, res) => {
 app.delete("/customer/buy", loginMiddleware, (req, res) => {
   deleteBuy(con, req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/service", loginMiddleware, (req, res) => {
   getService(con, req, res);
 })
@@ -154,7 +154,7 @@ app.post("/service", loginMiddleware, (req, res) => {
 app.delete("/service", loginMiddleware, (req, res) => {
   deleteService(con, req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/commission", loginMiddleware, (req, res) => {
   getCommission(con, req ,res)
 })
@@ -166,7 +166,7 @@ app.post("/commission", loginMiddleware, (req, res) => {
 app.delete("/commission", loginMiddleware, (req, res) => {
   deleteCommission(con, req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.post("/package", loginMiddleware, (req, res) => {
   insertPackage(con, req, res)
 })
@@ -178,7 +178,7 @@ app.get("/package", loginMiddleware, (req, res) => {
 app.delete("/package", loginMiddleware, (req, res) => {
   deletePackage(con, req ,res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.post("/order", loginMiddleware, (req, res) => {
   insertOrderlist(con ,req, res)
 })
@@ -190,7 +190,7 @@ app.get("/order", loginMiddleware, (req, res) => {
 app.delete("/order", loginMiddleware, (req, res) => {
   deleteOrder(con ,req, res)
 })
-
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const port = process.env.PORT || 3307;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

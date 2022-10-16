@@ -1,10 +1,10 @@
 import e from "express";
 import { v4 as uuidv4 } from "uuid";
 
-const createText = async (order_id, services) => {
-  var txt = `("${order_id}", "${services[0].service_id}")`;
+const createText = async (order_id, services, use) => {
+  var txt = `("${order_id}", "${services[0].service_id}", "${use[0]}")`;
   for (let i = 1; i < services.length; i++) {
-    txt += `,("${order_id}", "${services[i].service_id}")`;
+    txt += `,("${order_id}", "${services[i].service_id}", "${use[i]}")`;
   }
   return txt;
 };
@@ -78,7 +78,7 @@ const haveCustomerId = (con, customer_id) => {
 
 const insertIncluded = async (con, txt) => {
   con.query(
-    `INSERT INTO included(order_id, service_id) VALUES ${txt}`,
+    `INSERT INTO included(order_id, service_id, usePackage) VALUES ${txt}`,
     (err, result) => {
       if (err) throw err;
     }
@@ -150,13 +150,28 @@ const upRank = async (con, customer_id) => {
 //   })
 // }
 
-// const updateCanReceive = async(con, order_id, service_id) => {
-//   const sql1 = `UPDATE included SET can_receive_commission = 1 WHERE order_id = "${order_id}" AND service_id = "${service_id}"`;
-//   con.query(sql1, (err, result) => {
-//     if (err) throw err;
-//     console.log(`Set can_receive_commission = 1 WHERE order_id = "${order_id}" AND service_id = "${service_id}"`);
-//   })
-// }
+const updateUsePackage = async(con, customer_id, services) => {
+  const sql1 = `SELECT * FROM member_info WHERE customer_id = "${customer_id}"`
+  var use = []
+  return new Promise((resolve, reject) => {
+    con.query(sql1, (err, result1) => {
+      if (err) throw err;
+      for (let i = 0; i < result1.length ; i++){
+        for (let j = 0; j < services.length; j++){
+          if (result1[i].service_id == services[j].service_id){
+            if (result1[i].totalUse > result1[i].usages){
+              console.log("totalUse > usages");
+              use[j] = 1;
+            }else{
+              use[j] = 0;
+            }
+          }
+        }
+      }
+      resolve(use);
+    })
+  })
+}
 
 const checkHavePackage = async(con, customer_id, services) => {
   const sql1 = `SELECT * FROM member_info WHERE customer_id = "${customer_id}"`
@@ -190,7 +205,8 @@ function insertOrderlist(con, req, res) {
   const order_status = req.body.order_status; //! url
   const tel = req.body.tel; //! url
   const is_booking = req.body.is_booking;
-  var booking_time = req.body?.booking_time ?? undefined;
+  // var booking_time = req.body?.booking_time ?? undefined;
+  var booking_time = Date.now();
   var arrival_time = Date.now();
   const code = req.body.code; //! please verify
   var order_type = "GENERAL";
@@ -246,23 +262,36 @@ function insertOrderlist(con, req, res) {
     var sqlNB = `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,arrived_time,code,order_type, comment) 
                   VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
     //
-
-    var txtO = await createText(order_id, services);
+    var use = await updateUsePackage(con, customer_id, services)
+    var txtO = await createText(order_id, services, use);
     if (is_booking) {
       console.log("Booking");
       con.query(sqlB, (err, result) => {
         if (err) throw err;
         con.query(
-          `INSERT INTO make_order VALUES("${customer_id}","${order_id}");`,
-          async (err, result) => {
+          `INSERT INTO make_order VALUES("${customer_id}","${order_id}");`,//! insert make order
+          async (err, result1) => {
             if (err) throw err;
-
+            
             await insertIncluded(con, txtO);
             await upRank(con, customer_id);
             // await canReceiveCom(con, order_id);
-
-            con.query(`UPDATE customer SET customer_type = "MEMBER" WHERE customer_id = "${customer_id}"`, (err, result) => {
+            con.query(`SELECT * FROM member_info WHERE customer_id = "${customer_id}"`, (err, result2) => {
               if (err) throw err;
+              let status = 0;
+              for (let i = 0; i < result2.length; i++){
+                if(result2[i].totalUse <= result2[i].usages){
+                  status = 1;
+                }else{
+                  status = 0;
+                }
+              }
+              if (status == 1){
+                con.query(`UPDATE customer SET customer_type = "GENERAL" WHERE customer_id = "${customer_id}"`, (err, result) => {
+                  if (err) throw err;
+                })
+              }
+
               res.status(200).send({ msg: "Insert order success" });
               console.log("Insert order success");
             })

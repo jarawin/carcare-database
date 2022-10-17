@@ -12,6 +12,7 @@ const checkWageType = async (con, wage_type) => {
     })
   })
 }
+
 const insertApply = (con, sql2, res) => {
   con.query(sql2, (err, result) => {
     if (err) throw err;
@@ -62,9 +63,25 @@ async function applyWork(con, req, res) {
     const id_card = req.body.id_card;//! url
     const resume = req.body.resume;//! url
     const house_registration = req.body.house_registration;//! url
+    
+    // `SELECT * FROM employee_wage WHERE wage_type = "${wage_type}"`
+    // //TODO check employee have wage
+    // `SELECT * FROM employee WHERE employee_id = "${employee_id}"`
+    // //TODO check employee have employee
+    // `INSERT INTO employee(employee_id, lastlogin_time, tel, email, picture_url, employee_type, work_background, 
+    //   graduation_certificate,prefixname, fname, lname, nickname, wage_type, address, id_card, resume, house_registration) 
+    // VALUES("${employee_id}","${lastlogin_time}","${tel}","${email}","${picture_url}","${employee_type}",
+    //   "${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}",
+    //   "${wage_type}","${address}","${id_card}","${resume}","${house_registration}");`
+    // //TODO insert employee
+
     const sql1 = `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
-    const sql2 = `INSERT INTO employee(employee_id, lastlogin_time, tel, email, picture_url, employee_type, work_background, graduation_certificate,prefixname, fname, lname, nickname, wage_type, address, id_card, resume, house_registration) 
-                  VALUES("${employee_id}","${lastlogin_time}","${tel}","${email}","${picture_url}","${employee_type}","${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}","${wage_type}","${address}","${id_card}","${resume}","${house_registration}");`;
+
+    const sql2 = `INSERT INTO employee(employee_id, lastlogin_time, tel, email, picture_url, employee_type, work_background, 
+                  graduation_certificate,prefixname, fname, lname, nickname, wage_type, address, id_card, resume, house_registration) 
+                  VALUES("${employee_id}","${lastlogin_time}","${tel}","${email}","${picture_url}","${employee_type}",
+                  "${work_background}","${graduation_certificate}","${prefixname}","${fname}","${lname}","${nickname}",
+                  "${wage_type}","${address}","${id_card}","${resume}","${house_registration}");`;
 
     //TODO check phone
     if (!isPhoneNumber(tel)){

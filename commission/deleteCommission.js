@@ -25,3 +25,8 @@ const deleteCommission = (con, req, res) => {
 }
 
 export {deleteCommission}
+
+// `SELECT * FROM commission WHERE commission_id  = "${commission_id}"`
+// //TODO have commission_id
+// `DELETE FROM commission WHERE commission_id = "${commission_id}"`
+// //TODO delete commisison

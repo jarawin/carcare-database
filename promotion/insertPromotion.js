@@ -117,3 +117,37 @@ async function insertPromotion(con, req, res) {
 }
 
 export { insertPromotion };
+
+// `SELECT code FROM promotion WHERE code in ("${code}")`
+
+// const createText = async (code, price_per_type) => {
+//   var txt1 = `("${code}", "${price_per_type[0].type_of_car}", "${price_per_type[0].reduce_type}", ${price_per_type[0].reduce})`;
+//   for (let i = 1; i < price_per_type.length; i++) {
+//     txt1 += `,("${code}", "${price_per_type[i].type_of_car}", "${price_per_type[i].reduce_type}", ${price_per_type[i].reduce})`;
+//   }
+//   return txt1;
+// };
+
+// const createTextDay = async (code, promotion_by_day) => {
+//   var txt1 = `("${code}", "${promotion_by_day[0].day}")`;
+//   for (let i = 1; i < promotion_by_day.length; i++) {
+//     txt1 += `,("${code}", "${promotion_by_day[i].day}")`;
+//   }
+//   return txt1;
+// };
+
+// const createTextReduce = async (code, can_reduce) => {
+//   var txt1 = `("${code}", "${can_reduce[0].service_id}")`;
+//   for (let i = 1; i < can_reduce.length; i++) {
+//     txt1 += `,("${code}", "${can_reduce[i].service_id}")`;
+//   }
+//   return txt1;
+// };
+// `INSERT INTO promotion(code, name, desciption, image, starttime, endtime, limitflag, limit_amount, limit_type, dayflag, rankflag, rank) 
+// VALUES("${code}", "${name}", "${desciption}", "${image}", "${starttime}", "${endtime}", "${limitflag}", "${limit_amount}", "${limit_type}", "${dayflag}", "${rankflag}", "${rank}")`
+
+// `INSERT INTO price_per_type_p VALUES ${txt}`
+
+// `INSERT INTO promotion_by_day(code, day) VALUES ${txt2}`
+
+// `INSERT INTO can_reduce VALUES ${txt3}`

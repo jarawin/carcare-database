@@ -83,4 +83,11 @@ function insertBuy(con, req, res) {
   
   export {insertBuy}
 
- 
+  // `SELECT * FROM package_info WHERE package_id IN ${txt}`
+  // //TODO check have package_id
+  // `SELECT * FROM customer WHERE customer_id = "${customer_id}"`
+  // //TODO check have package_id
+  // `INSERT INTO buy VALUES ${txtO};`
+  // //TODO insert buy
+  // `UPDATE customer SET customer_type = "MEMBER" WHERE customer_id = "${customer_id}"`
+  // //TODO update customer type จาก general เป็น member

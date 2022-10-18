@@ -90,3 +90,29 @@ const checkService = async (con, res, service_id) => {
             "max":"10"}]
 }
 */
+
+
+// `SELECT * FROM service WHERE service_id = "${service_id}"`
+
+// `SELECT package_name, package_desciption, reduce_type, reduce 
+//  FROM package_info
+//  WHERE package_name = "${package_name}"`
+
+// `INSERT INTO package_info(package_id,package_name,package_desciption,reduce_type,reduce) 
+//  VALUES("${package_id}","${package_name}","${package_desciption}","${reduce_type}","${reduce}");`
+
+//  for (let i = 0; i < detail.length; i++){
+//   if (!(await checkService(con, res, detail[i].service_id))){
+//     res.status(501).send({status:`service does not exist`})
+//     console.log("service does not exist");
+//     return 0;
+//   }
+//   if (i == 0){
+//     txt += `("${package_id}","${detail[0].service_id}",${detail[0].max})`
+//   }else{
+//     txt += `,("${package_id}","${detail[i].service_id}",${detail[i].max})`
+//   }
+  
+// }
+
+// `INSERT INTO generate_by VALUES ${txt};`

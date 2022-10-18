@@ -16,7 +16,7 @@ const checkWageType = async (con, wage_type) => {
 const insertApply = (con, sql2, res) => {
   con.query(sql2, (err, result) => {
     if (err) throw err;
-    res.status(200).send("applyment pending");
+    res.status(200).send({msg:"applyment pending"});
     console.log("applyment pending");
   });
 }
@@ -123,7 +123,7 @@ async function applyWork(con, req, res) {
           console.log("Account already exists");
         }
       });
-    });
+    });pp
   }
   
   export {applyWork};

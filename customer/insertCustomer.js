@@ -83,3 +83,10 @@ async function register(con, req, res) {
   }
   
   export { register };
+
+
+  // `SELECT * FROM customer WHERE customer_id = "${customer_id}"`
+  // //TODO check have customer_id
+  // `INSERT INTO customer(customer_id, fname, lname, email, picture_url, firstlogin_time, lastlogin_time, rank, customer_type, tel) 
+  //  VALUES("${customer_id}","${fname}","${lname}","${email}","${picture_url}","${firstlogin_time}","${lastlogin_time}","${rank}","${customer_type}","${tel}");`
+  //  //TODO insert customer

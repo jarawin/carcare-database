@@ -40,3 +40,9 @@ function insertCommission(con, req, res) {
   }
   
   export { insertCommission };
+
+  // `SELECT * FROM commission WHERE commission_id = "${commission_id}"`
+  // //TODO check have commission
+  // `INSERT INTO commission(commission_id, topic, description, quota_type, quota_amount, amount_type, amount, order_type)
+  //  VALUES("${commission_id}","${topic}","${description}","${quota_type}","${quota_amount}","${amount_type}","${amount}","${order_type}");`
+  // //TODO insert commission

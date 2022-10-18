@@ -49,7 +49,6 @@ const updateCustomer = (con, req, res) => {
                     console.log(`image is not url`);
                     return 0;
                   }
-
                     
                 if (!isPhoneNumber(tel)){//TODO check phone
                     res.status(501).send("Not phone format")
@@ -99,3 +98,11 @@ const updateCustomer = (con, req, res) => {
 }
 
 export {updateCustomer}
+
+
+// `SELECT * FROM customer WHERE customer_id ="${customer_idH}"`
+// //TODO check have customer
+// `UPDATE customer SET customer_id ="${customer_id}",fname = "${fname}", lname = "${lname}", email = "${email}",picture_url = "${picture_url}",
+// firstlogin_time = ${firstlogin_time},lastlogin_time = ${lastlogin_time},rank = "${rank}",customer_type = "${customer_type}",tel = "${tel}"
+// WHERE customer_id = "${customer_idH}"`
+// //TODO update customer

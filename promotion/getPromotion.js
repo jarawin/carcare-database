@@ -64,4 +64,17 @@ function getAllPromotion(con, req, res) {
   });
 }
 
-export { getPromotion, getAllPromotion };
+export { getPromotion};
+
+
+// `SELECT * FROM promotion WHERE code = "${code}"`
+// //TODO check have promotion_by_day
+// `SELECT * 
+// FROM promotion AS p
+// INNER JOIN promotion_by_day AS pd ON p.code = pd.code
+// WHERE pd.code= "${code}";`
+// //TODO get one
+// `SELECT * 
+// FROM promotion AS p
+// LEFT JOIN promotion_by_day AS pd ON p.code = pd.code;`
+// //TODO get all

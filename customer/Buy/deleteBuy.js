@@ -23,3 +23,8 @@ const deleteBuy = (con, req, res) => {
 }
 
 export {deleteBuy}
+
+// `SELECT * FROM buy WHERE customer_id = "${customer_id}" AND package_id = "${package_id}" AND time = "${time}"`
+// //TODO check have package_id
+// `DELETE FROM buy WHERE customer_id = "${customer_id}" AND package_id = "${package_id}" AND time = "${time}"`
+// //TODO delete package_id

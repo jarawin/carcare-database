@@ -30,3 +30,9 @@ async function getBuy(con, req, res) {
   }
   
   export { getBuy };
+
+
+  // `SELECT * FROM buy WHERE customer_id = "${customer_id}"`
+  // //TODO check have customer
+  // "SELECT * FROM buy"
+  // //TODO get all

@@ -21,3 +21,8 @@ const deleteCustomer = (con, req, res) => {
 }
 
 export {deleteCustomer}
+
+// `SELECT * FROM customer WHERE customer_id = "${customer_id}"`
+// //TODO check have customer
+// `DELETE FROM customer WHERE customer_id = "${customer_id}"`
+// //TODO delete customer

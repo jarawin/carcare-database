@@ -107,3 +107,19 @@ async function insertService(con, req, res) {
   }
   
   export { insertService };
+
+
+
+  // `SELECT * FROM commission WHERE commission_id = "${commission_id}"`
+  // //TODO check Commission
+  // `SELECT * FROM service WHERE service_id = "${service_id}"`;
+  // //TODO get service for check duplicate
+  // `INSERT INTO service(service_id, name, description, image, commission_id)
+  //  VALUES("${service_id}","${name}","${description}","${image}","${commission_id}");`
+  // //TODO insert service
+  //   `INSERT INTO price_per_type_s VALUES ${txt}`
+  // //TODO insert PricePerTypeS
+  // `INSERT INTO service_items VALUES ${txt}`
+  // //TODO insert ServiceItem
+
+  

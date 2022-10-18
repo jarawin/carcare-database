@@ -53,3 +53,8 @@
     }
     
     export { getCommission };
+
+    // `SELECT * FROM commission WHERE commission_id = "${commission_id}"`
+    // //TODO get one
+    // "SELECT * FROM commission"
+    // //TODO get all

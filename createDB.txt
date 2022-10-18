@@ -325,11 +325,9 @@ ADD CONSTRAINT gbs
 
 CREATE VIEW member_info AS
 SELECT c.customer_id, g.service_id, SUM(g.max) AS totalUse, (
-    
-SELECT COUNT(*) 
-FROM customer AS cc, make_order AS mo, orderlist AS o, included AS i
-WHERE cc.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = i.order_id AND g.service_id = i.service_id AND o.order_type = "MEMBER") AS usages
-
+    SELECT COUNT(*) 
+    FROM customer AS cc, make_order AS mo, orderlist AS o, included AS i
+    WHERE cc.customer_id = mo.customer_id AND mo.order_id = o.order_id AND o.order_id = i.order_id AND g.service_id = i.service_id AND o.order_type = "MEMBER") AS usages
 FROM customer AS c, buy AS b, package_info AS p, generate_by AS g
 WHERE c.customer_id = b.customer_id AND b.package_id = p.package_id AND p.package_id = g.package_id
 GROUP BY g.service_id;
@@ -376,3 +374,4 @@ GROUP BY s.commission_id;
 
 
 
+SELECT DAYOFWEEK((SELECT CURRENT_DATE));

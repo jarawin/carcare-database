@@ -24,3 +24,8 @@ const deleteService = (con, req, res) => {
 }
 
 export {deleteService}
+
+// `SELECT * FROM service WHERE service_id = "${service_id}"`
+// //TODO check have service_id
+// `DELETE FROM service WHERE service_id = "${service_id}"`
+// //TODO delete service_id

@@ -21,3 +21,8 @@ const deletePromotion = (con, req, res) => {
 }
 
 export {deletePromotion}
+
+// `SELECT * FROM promotion WHERE code = "${code}"`
+// //TODO check have code
+// `DELETE FROM promotion WHERE code = "${code}"`
+// //TODO delete code

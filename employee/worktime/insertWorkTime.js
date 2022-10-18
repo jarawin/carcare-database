@@ -44,3 +44,10 @@ async function insertWorkTime(con, req, res) {
 }
 
 export { insertWorkTime };
+
+
+// `SELECT * FROM employee WHERE employee_id = "${employee_id}"`;
+// //TODO check have employee
+// `INSERT INTO workTime(employee_id, starttime, location_start)
+// VALUES("${employee_id}", ${starttime},"${location_start}")`;
+// //TODO insert worktime

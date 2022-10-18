@@ -5,6 +5,7 @@ import { createConnection } from "mysql2";
 import { insertPromotion } from "./promotion/insertPromotion.js"
 import { getPromotion} from "./promotion/getPromotion.js"
 import { deletePromotion } from "./promotion/deletePromotion.js";
+import { canUseP } from "./promotion/canUseP.js";
 
 import { login } from "./employee/login.js";
 import { applyWork } from "./employee/applyWork.js"
@@ -77,6 +78,10 @@ app.get("/", loginMiddleware, (req, res) => {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 app.get("/promotion", loginMiddleware, (req, res) => {
   getPromotion(con, req, res);
+})
+
+app.post("/promotion/canuse", loginMiddleware, (req, res) => {
+  canUseP(con, req, res);
 })
 
 app.post("/promotion", loginMiddleware, (req, res) => {

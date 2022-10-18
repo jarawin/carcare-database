@@ -23,3 +23,8 @@ const deletePackage = (con, req, res) => {
 }
 
 export {deletePackage}
+
+// `SELECT * FROM package_info WHERE package_id = "${package_id}"`
+// //TODO check have package_id
+// `DELETE FROM package_info WHERE package_id = "${package_id}"`
+// //TODO delete package_id

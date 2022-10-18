@@ -22,7 +22,7 @@
               res.status(501).send({msg : "Package id does not exists"});
               console.log("Package id does not exists");
           }else{//? Have account
-            res.status(200).send({msg: "OK",isCustomer: true, data: result[0]});
+            res.status(200).send({msg: "OK", data: result[0]});
             console.log("Get Package success");
           }
         });
@@ -30,3 +30,8 @@
     }
     
     export { getPackage };
+
+  // "SELECT * FROM package_info"
+  // //TODO get all
+  // `SELECT * FROM package_info WHERE package_id = "${package_id}"`
+  // //TODO get one

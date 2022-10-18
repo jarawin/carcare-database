@@ -337,3 +337,30 @@ function insertOrderlist(con, req, res) {
 }
 
 export { insertOrderlist };
+
+
+
+// `SELECT * FROM customer WHERE customer_id = "${customer_id}"`
+// //TODO check have customer
+// `SELECT * FROM orderlist WHERE order_id = "${order_id}"`
+// //TODO check dup key
+// `SELECT * FROM service WHERE service_id IN ${txt}`
+// //? `SELECT * FROM service WHERE service_id IN (),(),()`
+
+// `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,booking_time,code,order_type, comment) 
+//  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${booking_time},"${code}","${order_type}","${comment}");`;
+// //TODO booking
+// `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,arrived_time,code,order_type, comment) 
+//   VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
+// //TODO not booking
+
+
+// `SELECT * FROM member_info WHERE customer_id = "${customer_id}"`
+// //TODO check have package
+// //TODO check package can use?
+// `INSERT INTO included(order_id, service_id, usePackage) VALUES ${txt}`
+// //TODO insert all service
+// `UPDATE customer SET rank = "${rank}" WHERE customer_id = "${customer_id}"`
+// //TODO up rank
+
+

@@ -28,3 +28,8 @@ async function getCustomer(con, req, res) {
   }
   
   export { getCustomer };
+
+  // `SELECT * FROM customer WHERE customer_id = "${customer_id}"`
+  // //TODO get one
+  // "SELECT * FROM customer"
+  // //TODO get all

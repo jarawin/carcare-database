@@ -81,75 +81,72 @@ const canUseP = (con, req, res) => {
             con.query(sql2, (err, result2) => {
                 if (err) throw err;
 
-                if(result1[0].rankflag == 1){
-                    if(result1[0].rank == "SILVER" && result2[0].rank == "BRONZE"){
-                        console.log("Condition not match");
-                        res.status(200).send({msg: "Condition not match", isCanUse : false})
-                        return 0;
-                    }
-                    if(result1[0].rank == "GOLD" && result2[0].rank != "GOLD"){
-                        console.log("Condition not match");
-                        res.status(200).send({msg: "Condition not match", isCanUse : false})
-                        return 0;
-                    }
-                }
+                // if(result1[0].rankflag == 1){
+                //     if(result1[0].rank == "SILVER" && result2[0].rank == "BRONZE"){
+                //         console.log("Condition not match");
+                //         res.status(200).send({msg: "Condition not match", isCanUse : false})
+                //         return 0;
+                //     }
+                //     if(result1[0].rank == "GOLD" && result2[0].rank != "GOLD"){
+                //         console.log("Condition not match");
+                //         res.status(200).send({msg: "Condition not match", isCanUse : false})
+                //         return 0;
+                //     }
+                // }
 
-                if(result1[0].member == 1 && result2[0].customer_type != "MEMBER"){
-                    res.status(200).send({msg: "Customer is not member", isCanUse : false})
-                    return 0;
-                }
+                // if(result1[0].member == 1 && result2[0].customer_type != "MEMBER"){
+                //     res.status(200).send({msg: "Customer is not member", isCanUse : false})
+                //     return 0;
+                // }
 
-                if(!(result1[0].starttime < Date.now || Date.now < result1[0].endtime)){
-                    res.status(200).send({msg: "Time not match", isCanUse : false})
-                    return 0;
-                }
+                // if(!(result1[0].starttime < Date.now || Date.now < result1[0].endtime)){
+                //     res.status(200).send({msg: "Time not match", isCanUse : false})
+                //     return 0;
+                // }
 
-                if(result1[0].dayflag == 1){
-                    console.log("eiei");
-                    con.query(`SELECT *,(SELECT DAYNAME(CURRENT_DATE)) AS DAYNOW FROM promotion_by_day WHERE code = "${code}";` , (err, result11) => {
-                        if (err) throw err;
+                // if(result1[0].dayflag == 1){
+                //     console.log("eiei");
+                //     con.query(`SELECT *,(SELECT DAYNAME(CURRENT_DATE)) AS DAYNOW FROM promotion_by_day WHERE code = "${code}";` , (err, result11) => {
+                //         if (err) throw err;
 
-                        for (let i = 0; i < result11.length; i++){
-                            if (result11[i].day != result11[i].DAYNOW){
-                                res.status(200).send({msg: "Day not match", isCanUse : false})
-                                return 0;
-                            }
-                        }
+                //         for (let i = 0; i < result11.length; i++){
+                //             if (result11[i].day != result11[i].DAYNOW){
+                //                 res.status(200).send({msg: "Day not match", isCanUse : false})
+                //                 return 0;
+                //             }
+                //         }
 
-                    })
-                }
+                //     })
+                // }
 
-                if(result1[0].limitflag == 1){
-                    if(result1[0].limit_type == "DAILY"){
-                        con.query(`SELECT COUNT(*) AS count FROM orderlist WHERE code = "${code}"`, (err, result12) => {
-                            if (err) throw err;
+                // if(result1[0].limitflag == 1){
+                //     if(result1[0].limit_type == "DAILY"){
+                //         con.query(`SELECT COUNT(*) AS count FROM orderlist WHERE code = "${code}"`, (err, result12) => {
+                //             if (err) throw err;
     
-                            if (result1[0].limit_amount < result12[0].count){
-                                res.status(200).send({msg: "limit per day", isCanUse : false})
-                                return 0;
-                            }
-                        })
-                    }
-                    // if(result1[0].limit_type == "MONTHLY"){
+                //             if (result1[0].limit_amount < result12[0].count){
+                //                 res.status(200).send({msg: "limit per day", isCanUse : false})
+                //                 return 0;
+                //             }
+                //         })
+                //     }
+                //     // if(result1[0].limit_type == "MONTHLY"){
 
-                    // }
-                }
-                con.query(`SELECT * FROM can_reduce WHERE code = "${code}"`,(err, result33) => {
+                //     // }
+                // }
+                con.query(`SELECT * FROM can_reduce WHERE code = "${code}"`,async (err, result33) => {
                     if (err) throw err;
 
                     var reduce = []
                     for (let i = 0; i < services.length; i++){
                         for (let j = 0; j < result33.length; j++){
                             if (services[i].service_id == result33[j].service_id){
-                                con.query(`SELECT * FROM price_per_type_p WHERE code = "${code}" AND type_of_car = "${type_car}"`,(err, result333) => {
-                                    if (err) throw err;
-                                    console.log(result333);
-                                    reduce.push({"service_id":`${services[i].service_id}`,"type_of_car":"type_car", "reduce_type":`${result333[0].reduce_type}` , "reduce":`${result333[0].reduce}`})
-                                })
+                                reduce.push(await nestedddd(con, code, type_car, services, i))
                                 
                             }
                         }
                     }
+                    console.log(reduce);
                     res.status(200).send(reduce);
                 })
     
@@ -163,3 +160,16 @@ const canUseP = (con, req, res) => {
 } 
 
 export {canUseP}
+
+const nestedddd = async(con, code, type_car, services, i) => {
+    return new Promise((resolve, reject) => {
+        con.query(`SELECT * FROM price_per_type_p WHERE code = "${code}" AND type_of_car = "${type_car}"`,(err, result333) => {
+            if (err) throw err;
+            // console.log(result333);
+            // console.log({"service_id":`${services[i].service_id}`,"type_of_car":"type_car", "reduce_type":`${result333[0].reduce_type}` , "reduce":`${result333[0].reduce}`});
+            // reduce.push({"service_id":`${services[i].service_id}`,"type_of_car":"type_car", "reduce_type":`${result333[0].reduce_type}` , "reduce":`${result333[0].reduce}`})
+            // console.log(reduce);
+            resolve({"service_id":`${services[i].service_id}`,"type_of_car":`${type_car}`, "reduce_type":`${result333[0].reduce_type}` , "reduce":`${result333[0].reduce}`})
+        })
+    })
+}

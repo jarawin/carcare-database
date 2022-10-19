@@ -37,6 +37,24 @@ const insertPricePerTypeP = async (con, txt) => {
   });
 };
 
+const checkCanReduce = async (con) => {
+  var can_reduce2 = []
+  return new Promise((resolve, reject) => {
+    if(!can_reduce2[0]){
+      // console.log(can_reduce2[0] == undefined);
+      con.query(`SELECT service_id FROM service`, (err, result) => {
+        if (err) throw err;
+        for (let i = 0; i < result.length; i++){
+          console.log({"service_id":`${result[i].service_id}`});
+          can_reduce2.push({"service_id":`${result[i].service_id}`})
+        }
+        resolve(can_reduce2)
+      })
+    }
+    
+  })
+}
+
 async function insertPromotion(con, req, res) {
   const code = req.body?.code;
   const name = req.body?.name;
@@ -45,7 +63,11 @@ async function insertPromotion(con, req, res) {
   const starttime = req.body?.starttime;
   const endtime = req.body?.endtime;
   const price_per_type = req.body.price_per_typeP;
-  const can_reduce = req.body.can_reduce;
+  var can_reduce = req.body.can_reduce;
+  // console.log(can_reduce);
+  can_reduce = await checkCanReduce(con)
+  
+  console.log(can_reduce);
 
   var limitflag = 0;
   var limit_amount;
@@ -94,17 +116,20 @@ async function insertPromotion(con, req, res) {
             if (err) throw err;
             await insertPricePerTypeP(con, txt);
             console.log("insert promotion success");
+
+            if (can_reduce[0] != undefined){
+              var txt3 = await createTextReduce(code, can_reduce);
+              var sql3 = `INSERT INTO can_reduce VALUES ${txt3}`;
+              await insertCanReduce(con, sql3);
+            }
+
             if (dayflag == true) {
               var txt2 = await createTextDay(code, promotion_by_day);
-              var txt3 = await createTextReduce(code, can_reduce);
               var sql2 = `INSERT INTO promotion_by_day(code, day) VALUES ${txt2}`;
-              var sql3 = `INSERT INTO can_reduce VALUES ${txt3}`;
               await insertPDay(con, sql2);
-              await insertCanReduce(con, sql3, res);
-            } else {
-              console.log("no promotion_by_day");
-              res.status(200).send("Message : OK");
             }
+
+            res.status(200).send({msg : "OK"});
           });
         } else {
           console.log(`code ${result[0].code} is duplicate`);

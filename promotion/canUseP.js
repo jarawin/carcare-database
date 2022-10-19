@@ -81,59 +81,59 @@ const canUseP = (con, req, res) => {
             con.query(sql2, (err, result2) => {
                 if (err) throw err;
 
-                // if(result1[0].rankflag == 1){
-                //     if(result1[0].rank == "SILVER" && result2[0].rank == "BRONZE"){
-                //         console.log("Condition not match");
-                //         res.status(200).send({msg: "Condition not match", isCanUse : false})
-                //         return 0;
-                //     }
-                //     if(result1[0].rank == "GOLD" && result2[0].rank != "GOLD"){
-                //         console.log("Condition not match");
-                //         res.status(200).send({msg: "Condition not match", isCanUse : false})
-                //         return 0;
-                //     }
-                // }
+                if(result1[0].rankflag == 1){
+                    if(result1[0].rank == "SILVER" && result2[0].rank == "BRONZE"){
+                        console.log("Condition not match");
+                        res.status(200).send({msg: "Condition not match", isCanUse : false})
+                        return 0;
+                    }
+                    if(result1[0].rank == "GOLD" && result2[0].rank != "GOLD"){
+                        console.log("Condition not match");
+                        res.status(200).send({msg: "Condition not match", isCanUse : false})
+                        return 0;
+                    }
+                }
 
-                // if(result1[0].member == 1 && result2[0].customer_type != "MEMBER"){
-                //     res.status(200).send({msg: "Customer is not member", isCanUse : false})
-                //     return 0;
-                // }
+                if(result1[0].member == 1 && result2[0].customer_type != "MEMBER"){
+                    res.status(200).send({msg: "Customer is not member", isCanUse : false})
+                    return 0;
+                }
 
-                // if(!(result1[0].starttime < Date.now || Date.now < result1[0].endtime)){
-                //     res.status(200).send({msg: "Time not match", isCanUse : false})
-                //     return 0;
-                // }
+                if(!(result1[0].starttime < Date.now || Date.now < result1[0].endtime)){
+                    res.status(200).send({msg: "Time not match", isCanUse : false})
+                    return 0;
+                }
 
-                // if(result1[0].dayflag == 1){
-                //     console.log("eiei");
-                //     con.query(`SELECT *,(SELECT DAYNAME(CURRENT_DATE)) AS DAYNOW FROM promotion_by_day WHERE code = "${code}";` , (err, result11) => {
-                //         if (err) throw err;
+                if(result1[0].dayflag == 1){
+                    console.log("eiei");
+                    con.query(`SELECT *,(SELECT DAYNAME(CURRENT_DATE)) AS DAYNOW FROM promotion_by_day WHERE code = "${code}";` , (err, result11) => {
+                        if (err) throw err;
 
-                //         for (let i = 0; i < result11.length; i++){
-                //             if (result11[i].day != result11[i].DAYNOW){
-                //                 res.status(200).send({msg: "Day not match", isCanUse : false})
-                //                 return 0;
-                //             }
-                //         }
+                        for (let i = 0; i < result11.length; i++){
+                            if (result11[i].day != result11[i].DAYNOW){
+                                res.status(200).send({msg: "Day not match", isCanUse : false})
+                                return 0;
+                            }
+                        }
 
-                //     })
-                // }
+                    })
+                }
 
-                // if(result1[0].limitflag == 1){
-                //     if(result1[0].limit_type == "DAILY"){
-                //         con.query(`SELECT COUNT(*) AS count FROM orderlist WHERE code = "${code}"`, (err, result12) => {
-                //             if (err) throw err;
+                if(result1[0].limitflag == 1){
+                    if(result1[0].limit_type == "DAILY"){
+                        con.query(`SELECT COUNT(*) AS count FROM orderlist WHERE code = "${code}"`, (err, result12) => {
+                            if (err) throw err;
     
-                //             if (result1[0].limit_amount < result12[0].count){
-                //                 res.status(200).send({msg: "limit per day", isCanUse : false})
-                //                 return 0;
-                //             }
-                //         })
-                //     }
-                //     // if(result1[0].limit_type == "MONTHLY"){
+                            if (result1[0].limit_amount < result12[0].count){
+                                res.status(200).send({msg: "limit per day", isCanUse : false})
+                                return 0;
+                            }
+                        })
+                    }
+                    // if(result1[0].limit_type == "MONTHLY"){
 
-                //     // }
-                // }
+                    // }
+                }
                 con.query(`SELECT * FROM can_reduce WHERE code = "${code}"`,async (err, result33) => {
                     if (err) throw err;
 
@@ -147,7 +147,7 @@ const canUseP = (con, req, res) => {
                         }
                     }
                     console.log(reduce);
-                    res.status(200).send(reduce);
+                    res.status(200).send({msg:"OK",isCanUse:1,data:reduce});
                 })
     
     

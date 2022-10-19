@@ -38,22 +38,21 @@ const insertPricePerTypeP = async (con, txt) => {
 };
 
 const checkCanReduce = async (con) => {
-  var can_reduce2 = []
+  var can_reduce2 = [];
   return new Promise((resolve, reject) => {
-    if(!can_reduce2[0]){
+    if (!can_reduce2[0]) {
       // console.log(can_reduce2[0] == undefined);
       con.query(`SELECT service_id FROM service`, (err, result) => {
         if (err) throw err;
-        for (let i = 0; i < result.length; i++){
-          console.log({"service_id":`${result[i].service_id}`});
-          can_reduce2.push({"service_id":`${result[i].service_id}`})
+        for (let i = 0; i < result.length; i++) {
+          console.log({ service_id: `${result[i].service_id}` });
+          can_reduce2.push({ service_id: `${result[i].service_id}` });
         }
-        resolve(can_reduce2)
-      })
+        resolve(can_reduce2);
+      });
     }
-    
-  })
-}
+  });
+};
 
 async function insertPromotion(con, req, res) {
   const code = req.body?.code;
@@ -62,11 +61,12 @@ async function insertPromotion(con, req, res) {
   const image = req.body?.image;
   const starttime = req.body?.starttime;
   const endtime = req.body?.endtime;
-  const price_per_type = req.body.price_per_typeP;
+  const price_per_type = req.body?.price_per_typeP;
+  const is_member = req.body?.is_member;
   var can_reduce = req.body.can_reduce;
   // console.log(can_reduce);
-  can_reduce = await checkCanReduce(con)
-  
+  can_reduce = await checkCanReduce(con);
+
   console.log(can_reduce);
 
   var limitflag = 0;
@@ -117,7 +117,7 @@ async function insertPromotion(con, req, res) {
             await insertPricePerTypeP(con, txt);
             console.log("insert promotion success");
 
-            if (can_reduce[0] != undefined){
+            if (can_reduce[0] != undefined) {
               var txt3 = await createTextReduce(code, can_reduce);
               var sql3 = `INSERT INTO can_reduce VALUES ${txt3}`;
               await insertCanReduce(con, sql3);
@@ -129,7 +129,7 @@ async function insertPromotion(con, req, res) {
               await insertPDay(con, sql2);
             }
 
-            res.status(200).send({msg : "OK"});
+            res.status(200).send({ msg: "OK" });
           });
         } else {
           console.log(`code ${result[0].code} is duplicate`);

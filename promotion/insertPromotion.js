@@ -63,16 +63,11 @@ async function insertPromotion(con, req, res) {
   const starttime = req.body?.starttime;
   const endtime = req.body?.endtime;
   const price_per_type = req.body.price_per_typeP;
-<<<<<<< HEAD
-  const can_reduce = req.body.can_reduce;
-  const is_member = req.body.is_member == "TRUE" ? 1 : 0;
-=======
   var can_reduce = req.body.can_reduce;
   // console.log(can_reduce);
   can_reduce = await checkCanReduce(con)
   
   console.log(can_reduce);
->>>>>>> refs/remotes/origin/main
 
   var limitflag = 0;
   var limit_amount;

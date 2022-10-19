@@ -108,7 +108,7 @@ async function insertPromotion(con, req, res) {
           });
         } else {
           console.log(`code ${result[0].code} is duplicate`);
-          res.status(501).send({msg: `code ${result[0].code} is duplicate`});
+          res.status(501).send({ msg: `code ${result[0].code} is duplicate` });
           return 0;
         }
       }
@@ -143,7 +143,7 @@ export { insertPromotion };
 //   }
 //   return txt1;
 // };
-// `INSERT INTO promotion(code, name, desciption, image, starttime, endtime, limitflag, limit_amount, limit_type, dayflag, rankflag, rank) 
+// `INSERT INTO promotion(code, name, desciption, image, starttime, endtime, limitflag, limit_amount, limit_type, dayflag, rankflag, rank)
 // VALUES("${code}", "${name}", "${desciption}", "${image}", "${starttime}", "${endtime}", "${limitflag}", "${limit_amount}", "${limit_type}", "${dayflag}", "${rankflag}", "${rank}")`
 
 // `INSERT INTO price_per_type_p VALUES ${txt}`

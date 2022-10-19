@@ -46,6 +46,7 @@ async function insertPromotion(con, req, res) {
   const endtime = req.body?.endtime;
   const price_per_type = req.body.price_per_typeP;
   const can_reduce = req.body.can_reduce;
+  const is_member = req.body.is_member == "TRUE" ? 1 : 0;
 
   var limitflag = 0;
   var limit_amount;
@@ -76,8 +77,8 @@ async function insertPromotion(con, req, res) {
     }
   }
 
-  var sql1 = `INSERT INTO promotion(code, name, desciption, image, starttime, endtime, limitflag, limit_amount, limit_type, dayflag, rankflag, rank) 
-  VALUES("${code}", "${name}", "${desciption}", "${image}", "${starttime}", "${endtime}", "${limitflag}", "${limit_amount}", "${limit_type}", "${dayflag}", "${rankflag}", "${rank}")`;
+  var sql1 = `INSERT INTO promotion(code, name, desciption, image, starttime, endtime, limitflag, limit_amount, limit_type, dayflag, rankflag, rank, is_member) 
+  VALUES("${code}", "${name}", "${desciption}", "${image}", "${starttime}", "${endtime}", "${limitflag}", "${limit_amount}", "${limit_type}", "${dayflag}", "${rankflag}", "${rank}", "${is_member}")`;
 
   var txt = await createText(code, price_per_type);
   con.connect((err) => {

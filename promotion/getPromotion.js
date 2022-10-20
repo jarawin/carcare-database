@@ -126,14 +126,14 @@ function getPromotion(con, req, res) {
       if (err) throw err;
 
       if (result1[0] == undefined) {
-        res.status(200).send({ msg: "OK", isPromotion: false, data: result[0] });
+        res.status(200).send({ msg: "OK", isPromotion: false, data: result1[0] });
         console.log("Account not exists");
       }else{
         await getOnePromotionByDay(con, result1, code)
         await getOnePricePerTypeP(con, result1, code)
         await getOneCanReduce(con, result1, code)
 
-        res.status(200).send({ msg: "OK", isPromotion: true, data: result1 });
+        res.status(200).send({ msg: "OK", isPromotion: true, data: result1[0]});
         console.log("get promotion success");
       }
     });

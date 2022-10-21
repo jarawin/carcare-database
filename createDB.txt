@@ -255,8 +255,9 @@ CREATE TABLE price_per_type_p(
 );
 
 CREATE TABLE promotion_by_day(
-	code varchar(255) NOT NULL PRIMARY KEY,
-    day varchar(255) NOT NULL
+	code varchar(255) NOT NULL,
+    day varchar(255) NOT NULL,
+    PRIMARY KEY (code, day)
 );
 
 ALTER TABLE promotion_by_day

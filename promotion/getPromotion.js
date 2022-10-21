@@ -52,14 +52,20 @@ function getAllPromotion(con, req, res) {
                 LEFT JOIN promotion_by_day AS pd ON p.code = pd.code
                 WHERE p.dayflag = 1;`;
 
+  const sql3 = `SELECT * 
+                FROM promotion AS p
+                WHERE p.dayflag = 0;`;
+
   con.connect(async (err) => {
     if (err) throw err;
     console.log("\nConnected!");
 
-    con.query(sql2, (err, result) => {
-      if (err) throw err;
-      res.status(200).send({ msg: "OK", data: result });
-      console.log("get all promotion success");
+    con.query(sql2, (err, result1) => {
+      con.query(sql3, (err, result2) => {
+        if (err) throw err;
+        res.status(200).send({ msg: "OK", data: [...result1, ...result2] });
+        console.log("get all promotion success");
+      });
     });
   });
 }

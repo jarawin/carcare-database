@@ -89,14 +89,10 @@ async function insertPromotion(con, req, res) {
     }
   }
 
-  var rankflag = 0;
-  var rank;
-  if (true) {
-    rank = req.body?.rank ?? null;
-    if (rank != null) {
-      rankflag = 1;
-    }
-  }
+  // var rankflag = req.body?.rankflag == "TRUE" ? 1 : 0;
+  // var rank = req.body?.rank ?? null;
+  var rankflag = req.body?.rankflag == "TRUE" ? 1 : 0;
+  var rank = req.body?.rank ?? null;
 
   var sql1 = `INSERT INTO promotion(code, name, desciption, image, starttime, endtime, limitflag, limit_amount, limit_type, dayflag, rankflag, rank, is_member) 
   VALUES("${code}", "${name}", "${desciption}", "${image}", "${starttime}", "${endtime}", "${limitflag}", "${limit_amount}", "${limit_type}", "${dayflag}", "${rankflag}", "${rank}", "${is_member}")`;

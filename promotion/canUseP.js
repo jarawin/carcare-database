@@ -91,7 +91,7 @@ const canUseP = (con, req, res) => {
 
         if (result1[0].rankflag == 1) {
           if (result1[0].rank == "SILVER" && result2[0].rank == "BRONZE") {
-            console.log("Condition not match");
+            console.log("Condition not match SILVER");
             res
               .status(200)
               .send({ msg: "Condition not match", isCanUse: false });
@@ -101,7 +101,7 @@ const canUseP = (con, req, res) => {
             console.log("Condition not match");
             res
               .status(200)
-              .send({ msg: "Condition not match", isCanUse: false });
+              .send({ msg: "Condition not match GOLD", isCanUse: false });
             return 0;
           }
         }

@@ -4,10 +4,10 @@ const getAllCanReduce = async (con, result1) => {
       if (err) throw err;
 
       for (let i = 0; i < result1.length; i++) {
-        result1[i].canReduce = [];
+        result1[i].can_reduce = [];
         for (let j = 0; j < result4.length; j++) {
           if (result1[i].code == result4[j].code) {
-            result1[i].canReduce.push({
+            result1[i].can_reduce.push({
               service_id: `${result4[j].service_id}`,
             });
           }
@@ -24,10 +24,10 @@ const getAllPricePerTypeP = async (con, result1) => {
       if (err) throw err;
 
       for (let i = 0; i < result1.length; i++) {
-        result1[i].reducePrice = [];
+        result1[i].price_per_typeP = [];
         for (let j = 0; j < result3.length; j++) {
           if (result1[i].code == result3[j].code) {
-            result1[i].reducePrice.push({
+            result1[i].price_per_typeP.push({
               type_of_car: `${result3[j].type_of_car}`,
               reduce_type: `${result3[j].reduce_type}`,
               reduce: `${result3[j].reduce}`,
@@ -70,10 +70,10 @@ const getOneCanReduce = async (con, result1, code) => {
         if (err) throw err;
 
         for (let i = 0; i < result1.length; i++) {
-          result1[i].canReduce = [];
+          result1[i].can_reduce = [];
           for (let j = 0; j < result4.length; j++) {
             if (result1[i].code == result4[j].code) {
-              result1[i].canReduce.push({
+              result1[i].can_reduce.push({
                 service_id: `${result4[j].service_id}`,
               });
             }
@@ -93,10 +93,10 @@ const getOnePricePerTypeP = async (con, result1, code) => {
         if (err) throw err;
 
         for (let i = 0; i < result1.length; i++) {
-          result1[i].reducePrice = [];
+          result1[i].price_per_typeP = [];
           for (let j = 0; j < result3.length; j++) {
             if (result1[i].code == result3[j].code) {
-              result1[i].reducePrice.push({
+              result1[i].price_per_typeP.push({
                 type_of_car: `${result3[j].type_of_car}`,
                 reduce_type: `${result3[j].reduce_type}`,
                 reduce: `${result3[j].reduce}`,

@@ -23,6 +23,6 @@ const deleteOrder = (con, req, res) => {
 export {deleteOrder}
 
 // `SELECT * FROM orderlist WHERE order_id = "${order_id}"`
-// //TODO have order
+// //TODO check have order id
 // `DELETE FROM orderlist WHERE Order_id = "${order_id}"`
 // //TODO delete order

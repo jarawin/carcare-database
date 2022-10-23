@@ -90,3 +90,6 @@ async function register(con, req, res) {
   // `INSERT INTO customer(customer_id, fname, lname, email, picture_url, firstlogin_time, lastlogin_time, rank, customer_type, tel) 
   //  VALUES("${customer_id}","${fname}","${lname}","${email}","${picture_url}","${firstlogin_time}","${lastlogin_time}","${rank}","${customer_type}","${tel}");`
   //  //TODO insert customer
+
+  
+   

@@ -90,7 +90,10 @@ const upRank = async (con, customer_id) => {
   var rank = "";
   con.query(`SELECT * FROM rank_info WHERE customer_id = "${customer_id}"`, (err, result) => {
     if (err) throw err;
-    console.log(result);
+    // console.log(result);
+    if(!result[0]?.sumPrice){
+      return 0;
+    }
     if (result[0].sumPrice >= 1000 && result[0].sumPrice < 3000 && result[0].rank == "BRONZE"){
       rank = "SILVER"
     }else if (result[0].sumPrice >= 3000 && result[0].rank == "SILVER"){
@@ -343,24 +346,26 @@ export { insertOrderlist };
 // `SELECT * FROM customer WHERE customer_id = "${customer_id}"`
 // //TODO check have customer
 // `SELECT * FROM orderlist WHERE order_id = "${order_id}"`
-// //TODO check dup key
+// //TODO check not duplicate order id
 // `SELECT * FROM service WHERE service_id IN ${txt}`
 // //? `SELECT * FROM service WHERE service_id IN (),(),()`
+// //TODO check have service_id in Database
 
 // `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,booking_time,code,order_type, comment) 
-//  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${booking_time},"${code}","${order_type}","${comment}");`;
-// //TODO booking
+//  VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}",
+//         "${order_status}","${tel}",${is_booking},${booking_time},"${code}","${order_type}","${comment}");`;
+// //TODO booking                                                                                                                
 // `INSERT INTO orderlist(order_id,type_car,color_car,license_car,nickname,order_status,tel,is_booking,arrived_time,code,order_type, comment) 
-//   VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}","${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
-// //TODO not booking
+//   VALUES("${order_id}","${type_car}","${color_car}","${license_car}","${nickname}",
+//          "${order_status}","${tel}",${is_booking},${arrival_time},"${code}","${order_type}","${comment}");`;
+// //TODO not booking                                                                                                              
 
 
 // `SELECT * FROM member_info WHERE customer_id = "${customer_id}"`
-// //TODO check have package
-// //TODO check package can use?
+// //TODO check customer is member? and check package of customer can use?
 // `INSERT INTO included(order_id, service_id, usePackage) VALUES ${txt}`
-// //TODO insert all service
+// //TODO insert all service that customer choose into included(detail of order)
 // `UPDATE customer SET rank = "${rank}" WHERE customer_id = "${customer_id}"`
-// //TODO up rank
+// //TODO If the customer has the amount of expenses reaching the specified target, customer can up rank
 
 

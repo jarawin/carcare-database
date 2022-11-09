@@ -1,3 +1,11 @@
+/**
+ * If the order_id exists, delete the order_id from the database. If the order_id does not exist,
+ * return a message saying that the order_id does not exist.
+ * @param con - connection to the database
+ * @param req - request
+ * @param res - response object
+ * @returns The result of the query.
+ */
 const deleteOrder = (con, req, res) => {
     var order_id = req.query?.order_id;
     if (!order_id){

@@ -73,6 +73,16 @@ const getO = async(con, res, order_id) => {
     })
 }
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/**
+ * It's a function that takes in a connection, a request, and a response. It then checks if the request
+ * has a query parameter called order_id. If it does, it calls another function called getO and sends
+ * the connection, response, and order_id to it. If it doesn't, it connects to the database, queries
+ * the database, and then calls getO for each order_id it gets from the database
+ * @param con - mysql connection
+ * @param req - request
+ * @param res - the response object
+ * @returns a Promise.
+ */
 async function getOrderlist(con, req, res) {
     
     const order_id = req.query.order_id;

@@ -1,6 +1,13 @@
 import e from "express";
 import { v4 as uuidv4 } from "uuid";
 
+/**
+ * It takes an array of objects and an array of strings and returns a string of comma separated values.
+ * @param order_id - "1"
+ * @param services - [{service_id: '1'}, {service_id: '2'}, {service_id: '3'}]
+ * @param use - ["1", "1", "1"]
+ * @returns A string of values to be inserted into the database.
+ */
 const createText = async (order_id, services, use) => {
   var txt = `("${order_id}", "${services[0].service_id}", "${use[0]}")`;
   for (let i = 1; i < services.length; i++) {
@@ -9,6 +16,12 @@ const createText = async (order_id, services, use) => {
   return txt;
 };
 
+/**
+ * It takes an array of objects, and checks if the objects exist in a database.
+ * @param con - the connection to the database
+ * @param services - [{service_id: '1'}, {service_id: '2'}, {service_id: '3'}]
+ * @returns A promise that resolves to a boolean.
+ */
 const haveService = async (con, services) => {
   var txt = `("${services[0].service_id}"`;
   for (let i = 1; i < services.length; i++) {
@@ -32,6 +45,13 @@ const haveService = async (con, services) => {
   });
 };
 
+/**
+ * It checks if the phone number is in the format of +66 or 0 followed by 1-2 digits, a dash, 3 digits,
+ * a dash, 3-4 digits
+ * @param phone - The phone number to validate.
+ * @returns A function that takes a phone number as an argument and returns true if it is a valid phone
+ * number and false if it is not.
+ */
 const isPhoneNumber = (phone) => {
   var phoneno =
     /((\+66|0)(\d{1,2}\-?\d{3}\-?\d{3,4}))|((\+๖๖|๐)([๐-๙]{1,2}\-?[๐-๙]{3}\-?[๐-๙]{3,4}))/gm;
@@ -42,6 +62,13 @@ const isPhoneNumber = (phone) => {
   }
 };
 
+/**
+ * It returns a promise that resolves to true if the order_id is already in the database, and false if
+ * it is not.
+ * @param con - connection to the database
+ * @param order_id - the order id
+ * @returns A promise.
+ */
 const haveOrderId = (con, order_id) => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT * FROM orderlist WHERE order_id = "${order_id}"`, (err, result) => {
@@ -59,6 +86,13 @@ const haveOrderId = (con, order_id) => {
   });
 };
 
+/**
+ * It returns a promise that resolves to true if the customer_id exists in the database, and false if
+ * it doesn't.
+ * @param con - connection to the database
+ * @param customer_id - The customer's ID.
+ * @returns A promise.
+ */
 const haveCustomerId = (con, customer_id) => {
   return new Promise((resolve, reject) => {
     con.query(`SELECT * FROM customer WHERE customer_id = "${customer_id}"`, (err, result) => {
@@ -76,6 +110,12 @@ const haveCustomerId = (con, customer_id) => {
   });
 };
 
+/**
+ * It takes a connection and a string of values to insert into a table.
+ * @param con - connection to the database
+ * @param txt - "('1', '1', '1'), ('1', '2', '1'), ('1', '3', '1'), ('1', '4', '1'), ('1', '5', '1'),
+ * ('1', '6', '1'), ('1', '7
+ */
 const insertIncluded = async (con, txt) => {
   con.query(
     `INSERT INTO included(order_id, service_id, usePackage) VALUES ${txt}`,
@@ -86,6 +126,13 @@ const insertIncluded = async (con, txt) => {
 };
 
 
+/**
+ * If the customer's sumPrice is greater than or equal to 1000 and less than 3000 and the customer's
+ * rank is BRONZE, then the customer's rank is SILVER. If the customer's sumPrice is greater than or
+ * equal to 3000 and the customer's rank is SILVER, then the customer's rank is GOLD.
+ * @param con - connection to the database
+ * @param customer_id - the customer's id
+ */
 const upRank = async (con, customer_id) => {
   var rank = "";
   con.query(`SELECT * FROM rank_info WHERE customer_id = "${customer_id}"`, (err, result) => {
@@ -153,6 +200,15 @@ const upRank = async (con, customer_id) => {
 //   })
 // }
 
+/**
+ * It takes a customer_id and an array of services, and returns an array of 1s and 0s, where 1 means
+ * the customer can use the service, and 0 means they can't.
+ * @param con - connection to the database
+ * @param customer_id - "1"
+ * @param services - [{service_id: 1, service_name: "service1", service_price: 100, service_type:
+ * "type1"}, {service_id: 2, service_name: "service2", service_price: 200, service_type: "type2"}]
+ * @returns An array of promises.
+ */
 const updateUsePackage = async(con, customer_id, services) => {
   const sql1 = `SELECT * FROM member_info WHERE customer_id = "${customer_id}"`
   var use = []
@@ -163,7 +219,7 @@ const updateUsePackage = async(con, customer_id, services) => {
         for (let j = 0; j < services.length; j++){
           if (result1[i].service_id == services[j].service_id){
             if (result1[i].totalUse > result1[i].usages){
-              console.log("totalUse > usages");
+              console.log("totalUse > usages"); //! can use
               use[j] = 1;
             }else{
               use[j] = 0;
@@ -176,6 +232,13 @@ const updateUsePackage = async(con, customer_id, services) => {
   })
 }
 
+/**
+ * It checks if a customer has a package that can be used for a service.
+ * @param con - connection to database
+ * @param customer_id - 1
+ * @param services - [{service_id: 1, service_name: "service1", service_price: 100}, {service_id: 2,
+ * service_name: "service2", service_price: 200}]
+ */
 const checkHavePackage = async(con, customer_id, services) => {
   const sql1 = `SELECT * FROM member_info WHERE customer_id = "${customer_id}"`
   return new Promise((resolve, reject) => {
@@ -197,6 +260,12 @@ const checkHavePackage = async(con, customer_id, services) => {
   })
 }
 
+/**
+ * It inserts a new order into the database.
+ * @param con - connection to the database
+ * @param req - the request object
+ * @param res - the response object
+ */
 function insertOrderlist(con, req, res) {
   const customer_id = req.body.customer_id; //! please verify
   console.log(customer_id);
